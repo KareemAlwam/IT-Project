@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Profile - TravelHub</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo"> TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="profileLoginLink" class="login-link">Login</a>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h2> Share your travel experience</h2>
+            <div class="form-group">
+                <label>Title</label>
+                <input type="text" id="postTitle" placeholder="e.g., Amazing sunset in Santorini">
+            </div>
+            <div class="form-group">
+                <label>Content / Story</label>
+                <textarea rows="3" id="postContent" placeholder="Tell us about your trip..."></textarea>
+            </div>
+            <button id="addPostBtn">Publish Post</button>
+            <div id="formError" class="error-msg"></div>
+        </div>
+
+        <div class="card">
+            <h2> My Posts</h2>
+            <div id="myPostsList">
+                <!-- loaded by JS -->
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
+

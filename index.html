@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Home</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <nav class="navbar">
+        <a href="index.html" class="logo"> TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+        </div>
+    </nav>
+
+    <div class="search-section">
+        <h2 class="search-title">Where to next?</h2>
+        <div class="search-options">
+            <a href="#" class="search-card">Destinations</a>
+            <a href="#" class="search-card">Flights</a>
+            <a href="#" class="search-card">Hotels</a>
+        </div>
+    </div>
+
+    <!-- Recommendations (static) -->
+    <div class="recommendations">
+        <h2 class="section-title">Today Recommendations</h2>
+        <div class="cards">
+            <div class="card">
+                <img class="card-img" src="images/pyrimds.jpeg" alt="Pyramids of Giza">
+                <div class="card-content">
+                    <div class="card-title">Pyramids of Giza</div>
+                    <p>Cairo, Egypt – ancient wonder.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="images/sharmElShek.jpeg" alt="Sharm El Sheikh">
+                <div class="card-content">
+                    <div class="card-title">Sharm El Sheikh</div>
+                    <p>Red Sea, diving & resorts.</p>
+                </div>
+            </div>
+            <div class="card">
+                <img class="card-img" src="images/Paris.jpg" alt="Paris">
+                <div class="card-content">
+                    <div class="card-title">Paris, France</div>
+                    <p>Eiffel Tower, art, romance.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discover from experience (posts from localStorage) -->
+    <div class="discover">
+        <h2 class="section-title">Discover from experiences</h2>
+        <div id="postsContainer" class="posts-grid">
+            <!-- loaded by JS -->
+        </div>
+    </div>
+
+    <footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
