@@ -1,3 +1,5 @@
+/* style.css - Global Styles (excluding destination search page styles) */
+
 * {
     margin: 0;
     padding: 0;
@@ -264,6 +266,7 @@ button:hover {
     text-align: center;
 }
 
+/* global responsive */
 @media (max-width: 640px) {
     .navbar {
         flex-direction: column;
@@ -273,4 +276,3 @@ button:hover {
         padding: 1rem 2rem;
     }
 }
-

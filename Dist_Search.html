@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Search Destinations</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="Dist_Search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <a href="index.html" class="logo">TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+        </div>
+    </nav>
+
+    <!-- Search Header -->
+    <div class="search-page-header">
+        <h1>Find Your Next Adventure</h1>
+        <div class="search-bar-container">
+            <input type="text" id="searchInput" placeholder="Search destinations... (e.g., Egypt, Luxor)" class="search-input">
+            <button class="search-btn" onclick="applyFilters()"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="search-page-container">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+
+            <div class="filter-group">
+                <label>Rating</label>
+                <select id="ratingFilter" class="filter-select">
+                    <option value="0">Any Rating</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="4.5">4.5+ Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Location</label>
+                <select id="locationFilter" class="filter-select">
+                    <option value="all">All Locations</option>
+                    <option value="egypt">Egypt</option>
+                    <option value="france">France</option>
+                    <option value="italy">Italy</option>
+                    <option value="japan">Japan</option>
+                </select>
+            </div>
+            <!-- fix the clear filter btn-->
+            <button class="clear-filters-btn" onclick="clearFilters()">Clear Filters</button>
+        </aside>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <!-- View Toggle & Results Count -->
+            <div class="results-header">
+                <span id="resultsCount">6 destinations found</span>
+                <div class="view-toggle">
+                    <button class="view-btn" data-view="grid" onclick="switchView('grid')">
+                        <i class="fas fa-th-large"></i> Grid
+                    </button>
+                    <button class="view-btn" data-view="list" onclick="switchView('list')">
+                        <i class="fas fa-list"></i> List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Destinations Container -->
+            <div id="destinationsContainer" class="destinations-grid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Destination Detail Modal -->
+    <div id="detailModal" class="detail-modal">
+        <div class="modal-content">
+            <button class="close-modal" onclick="closeDetail()"><i class="fas fa-times"></i></button>
+            
+            <div class="modal-body">
+                <!-- Left: Media -->
+                <div class="modal-media">
+                    <div class="image-gallery">
+                        <img id="modalMainImage" src="" alt="" class="main-image">
+                        <div class="thumbnail-row" id="modalThumbnails"></div>
+                    </div>
+                    <div class="video-section">
+                        <div class="video-placeholder">
+                            <i class="fas fa-play-circle"></i>
+                            <span>Video Preview</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Info -->
+                <div class="modal-info">
+                    <h2 id="modalTitle"></h2>
+                    <div class="modal-meta">
+                        <span class="rating" id="modalRating"></span>
+                        <span class="location" id="modalLocation"></span>
+                        <span class="price-tag" id="modalPrice"></span>
+                    </div>
+
+                    <div class="weather-widget">
+                        <h4><i class="fas fa-cloud-sun"></i> Weather</h4>
+                        <div class="weather-info" id="modalWeather">
+                            <span class="temp">28°C</span>
+                            <span class="condition"><i class="fas fa-sun"></i> Sunny</span>
+                        </div>
+                    </div>
+
+                    <div class="description-section">
+                        <h4>About</h4>
+                        <p id="modalDescription"></p>
+                    </div>
+
+                    <div class="events-section">
+                        <h4><i class="fas fa-calendar-alt"></i> Events & Times</h4>
+                        <table class="events-table" id="modalEvents">
+                            <!-- Dynamic -->
+                        </table>
+                    </div>
+
+                    <div class="map-placeholder">
+                        <h4><i class="fas fa-map-marker-alt"></i> Location</h4>
+                        <div class="static-map">
+                            <i class="fas fa-map"></i>
+                            <span>Map View</span>
+                        </div>
+                    </div>
+
+                    <div class="booking-section">
+                        <h4><i class="fas fa-ticket-alt"></i> Book Your Trip</h4>
+                        <form id="bookingForm" onsubmit="submitBooking(event)">
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label>Date</label>
+                                    <input type="date" id="bookDate" required>
+                                </div>
+                                <div class="form-group">
+                                    <label>Time</label>
+                                    <input type="time" id="bookTime" required>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label class="checkbox-label">
+                                    <input type="checkbox" id="bookGuide"> Book a Tour Guide (+$50)
+                                </label>
+                            </div>
+                            <button type="submit" class="book-btn">Book Now</button>
+                        </form>
+                    </div>
+
+                    <div class="comments-section">
+                        <h4><i class="fas fa-comments"></i> Reviews & Comments</h4>
+                        <div class="comments-list" id="modalComments"></div>
+                        <div class="comment-input">
+                            <input type="text" id="commentText" placeholder="Write a comment...">
+                            <button onclick="addComment()"><i class="fas fa-paper-plane"></i></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
+
+
