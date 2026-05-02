@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Flight Details</title>
+    <link rel="stylesheet" href="MainLayout/style.css">
+    <link rel="stylesheet" href="MainLayout/Flight_Search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="MainLayout/Flight_Detail.css">
+</head>
+<body>
+    <!-- Navbar -->
+<nav class="navbar">
+        <a href="index.html" class="logo">TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Detail Page Container -->
+    <div class="detail-page-container">
+        <a href="Flight_Search.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Search
+        </a>
+
+        <div class="flight-detail-card">
+            <!-- Header -->
+            <div class="flight-detail-header">
+                <div class="airline-info">
+                    <div class="airline-logo" id="detailAirlineLogo"></div>
+                    <div>
+                        <div class="airline-name" id="detailAirlineName"></div>
+                        <div class="flight-number" id="detailFlightNumber"></div>
+                    </div>
+                </div>
+                <div class="flight-numbers">
+                    <div class="aircraft-type" id="detailAircraft"></div>
+                </div>
+            </div>
+
+            <!-- Route -->
+            <div class="flight-route-detail">
+                <div class="route-endpoint">
+                    <div class="time" id="detailDepartureTime"></div>
+                    <div class="date" id="detailDepartureDate"></div>
+                    <div class="airport-code" id="detailDepartureAirport"></div>
+                    <div class="city-name" id="detailDepartureCity"></div>
+                </div>
+                <div class="route-arrow-detail">
+                    <i class="fas fa-plane"></i>
+                    <div style="font-size: 0.8rem; margin-top: 0.5rem;" id="detailDuration"></div>
+                </div>
+                <div class="route-endpoint">
+                    <div class="time" id="detailArrivalTime"></div>
+                    <div class="date" id="detailArrivalDate"></div>
+                    <div class="airport-code" id="detailArrivalAirport"></div>
+                    <div class="city-name" id="detailArrivalCity"></div>
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="flight-info-section">
+                <h3 class="info-section-title"><i class="fas fa-info-circle"></i> Flight Details</h3>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h4>Duration</h4>
+                        <p id="detailTotalDuration"></p>
+                        <p class="sub-info" id="detailStops"></p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Baggage</h4>
+                        <p id="detailBaggage"></p>
+                        <p class="sub-info">Included</p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Aircraft</h4>
+                        <p id="detailAircraftType"></p>
+                        <p class="sub-info" id="detailAircraftConfig"></p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Meals</h4>
+                        <p id="detailMeals"></p>
+                        <p class="sub-info">Included</p>
+                    </div>
+                </div>
+
+                <!-- Booking Card -->
+                <div class="booking-card">
+                    <h3 class="info-section-title" style="border-color: white; color: white;">
+                        <i class="fas fa-ticket-alt"></i> Book This Flight
+                    </h3>
+
+                    <!-- Class Options -->
+                    <p style="margin-bottom: 0.8rem;">Select Class:</p>
+                    <div class="booking-options" id="classOptions"></div>
+
+                    <!-- Passengers -->
+                    <div class="passenger-section">
+                        <div class="passenger-group">
+                            <label>Adults (12+)</label>
+                            <select id="adultCount">
+                                <option value="1">1 Adult</option>
+                                <option value="2">2 Adults</option>
+                                <option value="3">3 Adults</option>
+                                <option value="4">4 Adults</option>
+                            </select>
+                        </div>
+                        <div class="passenger-group">
+                            <label>Children (2-11)</label>
+                            <select id="childCount">
+                                <option value="0">0 Children</option>
+                                <option value="1">1 Child</option>
+                                <option value="2">2 Children</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Total & Book Button -->
+                    <div class="booking-total">
+                        <span class="total-label">Total Price:</span>
+                        <span class="total-amount" id="totalPrice">$0</span>
+                    </div>
+                    <button class="bookflight-btn" onclick="bookFlight()">Book Now</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Load flight details from URL parameter
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavbar();
+            loadFlightDetail();
+        });
+    </script>
+</body>
+</html>

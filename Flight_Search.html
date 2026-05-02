@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Search Flights</title>
+    <link rel="stylesheet" href="MainLayout/style.css">
+    <link rel="stylesheet" href="MainLayout/Flight_Search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+<nav class="navbar">
+        <a href="index.html" class="logo">TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Search Header -->
+    <div class="search-page-header">
+        <h1>Find Your Perfect Flight</h1>
+        <div class="flight-search-bar">
+            <div class="flight-input-group">
+                <label>From</label>
+                <input type="text" id="fromInput" placeholder="City or Airport" oninput="searchFlights()">
+            </div>
+            <div class="flight-input-group">
+                <label>To</label>
+                <input type="text" id="toInput" placeholder="City or Airport" oninput="searchFlights()">
+            </div>
+            <div class="flight-input-group">
+                <label>Departure Date</label>
+                <input type="date" id="dateInput" onchange="searchFlights()">
+            </div>
+            <button class="flight-search-btn" onclick="searchFlights()">
+                <i class="fas fa-search"></i> Search
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="search-page-container">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+
+            <div class="filter-group">
+                <label>Airline</label>
+                <select id="airlineFilter" class="filter-select" onchange="applyFlightFilters()">
+                    <option value="all">All Airlines</option>
+                    <option value="EgyptAir">EgyptAir</option>
+                    <option value="Emirates">Emirates</option>
+                    <option value="Qatar Airways">Qatar Airways</option>
+                    <option value="Lufthansa">Lufthansa</option>
+                    <option value="British Airways">British Airways</option>
+                    <option value="Air France">Air France</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Stops</label>
+                <select id="stopsFilter" class="filter-select" onchange="applyFlightFilters()">
+                    <option value="all">Any</option>
+                    <option value="0">Non-stop</option>
+                    <option value="1">1 Stop</option>
+                    <option value="2">2+ Stops</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Departure Time</label>
+                <select id="departureTimeFilter" class="filter-select" onchange="applyFlightFilters()">
+                    <option value="all">Any Time</option>
+                    <option value="morning">Morning (6AM - 12PM)</option>
+                    <option value="afternoon">Afternoon (12PM - 6PM)</option>
+                    <option value="evening">Evening (6PM - 12AM)</option>
+                    <option value="night">Night (12AM - 6AM)</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Flight Class</label>
+                <select id="classFilter" class="filter-select" onchange="applyFlightFilters()">
+                    <option value="all">All Classes</option>
+                    <option value="economy">Economy</option>
+                    <option value="business">Business</option>
+                    <option value="first">First Class</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Price Range</label>
+                <div class="price-range-container">
+                    <div class="price-range-values">
+                        <span>$0</span>
+                        <span id="priceRangeValue">$1000+</span>
+                    </div>
+                    <input type="range" id="priceRange" min="100" max="1000" step="50" value="1000" oninput="updatePriceRange(this.value)">
+                </div>
+            </div>
+
+            <button class="clear-filters-btn" onclick="clearFlightFilters()">Clear Filters</button>
+        </aside>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <div class="results-header">
+                <span id="resultsCount">0 flights found</span>
+            </div>
+
+            <!-- Flights Container -->
+            <div id="flightsContainer" class="flights-list">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        // Initialize flight search on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavbar();
+            if (document.getElementById('flightsContainer')) {
+                renderFlights();
+            }
+        });
+    </script>
+</body>
+</html>

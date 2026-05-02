@@ -54,6 +54,72 @@ body {
     color: #1e6f5c;
     font-weight: bold;
 }
+.logout-btn {
+    background: #dc2626;
+    color: white !important;
+    padding: 0.4rem 1.2rem;
+    border-radius: 30px;
+    border: none;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 0.95rem;
+    text-decoration: none;
+}
+.logout-btn:hover {
+    background: #b91c1c;
+}
+
+/* Custom Notifications */
+.custom-notification {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: white;
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    z-index: 10000;
+    max-width: 350px;
+    animation: slideIn 0.3s ease;
+}
+.custom-notification.success {
+    border-left: 5px solid #22c55e;
+}
+.custom-notification.error {
+    border-left: 5px solid #ef4444;
+}
+.custom-notification.info {
+    border-left: 5px solid #3b82f6;
+}
+.custom-notification-content {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+.custom-notification-icon {
+    font-size: 1.25rem;
+}
+.custom-notification.success .custom-notification-icon { color: #22c55e; }
+.custom-notification.error .custom-notification-icon { color: #ef4444; }
+.custom-notification.info .custom-notification-icon { color: #3b82f6; }
+.custom-notification-message {
+    flex: 1;
+    color: #1e2a3e;
+}
+.custom-notification-close {
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0.25rem;
+    font-size: 1rem;
+}
+.custom-notification-close:hover { color: #1e2a3e; }
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
 
 /* search section */
 .search-section {
@@ -112,6 +178,12 @@ body {
     border-radius: 20px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+}
+.card h2 {
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
 }
 .card-img {
     height: 220px;
@@ -184,7 +256,7 @@ footer {
 .container {
     max-width: 1000px;
     margin: 2rem auto;
-    padding: 0 1rem;
+    padding: 2rem;
 }
 .form-group {
     margin-bottom: 1rem;

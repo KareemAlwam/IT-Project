@@ -1,0 +1,371 @@
+/* Flight_Detail.css - Flight Detail Page Styles */
+
+/* Detail Page Container */
+.detail-page-container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 0 1rem;
+}
+
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e6f5c;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    cursor: pointer;
+}
+
+.back-btn:hover {
+    color: #155a4a;
+}
+
+/* Flight Detail Card */
+.flight-detail-card {
+    background: white;
+    border-radius: 20px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+}
+
+.flight-detail-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem 2rem;
+    background: #1e2a3e;
+    color: white;
+}
+
+.flight-detail-header .airline-info {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.flight-detail-header .airline-logo {
+    width: 50px;
+    height: 50px;
+    background: #1e6f5c;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.flight-detail-header .flight-numbers {
+    text-align: right;
+}
+
+.flight-detail-header .flight-number {
+    font-size: 0.9rem;
+    opacity: 0.8;
+}
+
+.flight-detail-header .aircraft-type {
+    font-size: 0.85rem;
+    opacity: 0.7;
+}
+
+/* Flight Route Detail */
+.flight-route-detail {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 2.5rem 2rem;
+    background: linear-gradient(135deg, #f8fafc 0%, #e6f4f1 100%);
+}
+
+.route-endpoint {
+    text-align: center;
+    flex: 1;
+}
+
+.route-endpoint .time {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #1e2a3e;
+}
+
+.route-endpoint .date {
+    font-size: 1rem;
+    color: #64748b;
+    margin-top: 0.3rem;
+}
+
+.route-endpoint .airport-code {
+    font-size: 1.8rem;
+    font-weight: bold;
+    color: #1e6f5c;
+    margin-top: 0.5rem;
+}
+
+.route-endpoint .city-name {
+    font-size: 1rem;
+    color: #475569;
+}
+
+.route-arrow-detail {
+    flex: 0.5;
+    text-align: center;
+    color: #1e6f5c;
+    font-size: 2rem;
+}
+
+/* Flight Info Section */
+.flight-info-section {
+    padding: 2rem;
+}
+
+.info-section-title {
+    font-size: 1.3rem;
+    margin-bottom: 1.5rem;
+    color: #1e2a3e;
+    border-bottom: 2px solid #1e6f5c;
+    padding-bottom: 0.5rem;
+    display: inline-block;
+}
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.info-box {
+    background: #f8fafc;
+    padding: 1.2rem;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.info-box h4 {
+    font-size: 0.8rem;
+    color: #64748b;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 0.5rem;
+}
+
+.info-box p {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: #1e2a3e;
+}
+
+.info-box .sub-info {
+    font-size: 0.85rem;
+    color: #64748b;
+    font-weight: normal;
+}
+
+/* Booking Card */
+.booking-card {
+    background: linear-gradient(135deg, #1e6f5c 0%, #155a4a 100%);
+    padding: 2rem;
+    border-radius: 16px;
+    margin-top: 2rem;
+    color: white;
+}
+
+.booking-options {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.5rem;
+}
+
+.class-option {
+    flex: 1;
+    min-width: 150px;
+    background: rgba(255,255,255,0.1);
+    border: 2px solid rgba(255,255,255,0.2);
+    border-radius: 12px;
+    padding: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-align: center;
+}
+
+.class-option:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+.class-option.selected {
+    background: white;
+    color: #1e6f5c;
+    border-color: white;
+}
+
+.class-option .class-name {
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+.class-option .class-price {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-top: 0.3rem;
+}
+
+.class-option .class-details {
+    font-size: 0.8rem;
+    opacity: 0.8;
+}
+
+.passenger-section {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.passenger-group {
+    flex: 1;
+    min-width: 150px;
+}
+
+.passenger-group label {
+    display: block;
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+    opacity: 0.9;
+}
+
+.passenger-group select {
+    width: 100%;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 1rem;
+}
+
+.booking-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin: 1.5rem 0;
+    padding-top: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.2);
+}
+
+.total-label {
+    font-size: 1.1rem;
+}
+
+.total-amount {
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.bookflight-btn {
+    width: 100%;
+    padding: 1rem;
+    border-radius: 10px;
+    border: none;
+    background: white;
+    color: #1e6f5c;
+    font-size: 1.2rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.bookflight-btn:hover {
+    transform: scale(1.02);
+}
+
+/* Login Overlay */
+.login-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-overlay.active {
+    display: flex;
+}
+
+.login-overlay-content {
+    background: white;
+    padding: 3rem 2rem;
+    border-radius: 20px;
+    text-align: center;
+    max-width: 400px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+}
+
+.login-overlay-content h2 {
+    color: #1e2a3e;
+    margin-bottom: 1rem;
+    font-size: 1.8rem;
+}
+
+.login-overlay-content p {
+    color: #64748b;
+    margin-bottom: 2rem;
+    font-size: 1.05rem;
+}
+
+.login-overlay-content .btn-group {
+    display: flex;
+    gap: 1rem;
+}
+
+.login-overlay-content .btn-group button {
+    flex: 1;
+    padding: 0.8rem 1.5rem;
+    border-radius: 8px;
+    border: none;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 1rem;
+}
+
+.login-overlay-content .btn-login {
+    background: #1e6f5c;
+    color: white;
+}
+
+.login-overlay-content .btn-login:hover {
+    background: #155a4a;
+}
+
+.login-overlay-content .btn-close {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.login-overlay-content .btn-close:hover {
+    background: #cbd5e1;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .flight-detail-header {
+        flex-direction: column;
+        text-align: center;
+    }
+    .booking-options {
+        flex-direction: column;
+    }
+    .passenger-section {
+        flex-direction: column;
+    }
+    .route-endpoint .time {
+        font-size: 2rem;
+    }
+}

@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Search Hotels</title>
+    <link rel="stylesheet" href="MainLayout/style.css">
+    <link rel="stylesheet" href="MainLayout/Hotel_Search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <!-- Navbar -->
+<nav class="navbar">
+        <a href="index.html" class="logo">TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Search Header -->
+    <div class="search-page-header">
+        <h1>Find Your Perfect Stay</h1>
+        <div class="search-bar-container">
+            <input type="text" id="searchInput" placeholder="Search hotels... (e.g., Cairo Marriott, Nile Ritz)" class="search-input">
+            <button class="search-btn" onclick="applyFilters()"><i class="fas fa-search"></i></button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="search-page-container">
+        <!-- Filters Sidebar -->
+        <aside class="filters-sidebar">
+            <h3><i class="fas fa-filter"></i> Filters</h3>
+
+            <div class="filter-group">
+                <label>Rating</label>
+                <select id="ratingFilter" class="filter-select">
+                    <option value="0">Any Rating</option>
+                    <option value="4">4+ Stars</option>
+                    <option value="4.5">4.5+ Stars</option>
+                    <option value="5">5 Stars</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Location</label>
+                <select id="locationFilter" class="filter-select">
+                    <option value="all">All Locations</option>
+                    <option value="egypt">Egypt</option>
+                    <option value="france">France</option>
+                    <option value="italy">Italy</option>
+                    <option value="japan">Japan</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Hotel Class</label>
+                <select id="classFilter" class="filter-select">
+                    <option value="all">All Classes</option>
+                    <option value="5">5-Star</option>
+                    <option value="4">4-Star</option>
+                    <option value="3">3-Star</option>
+                    <option value="budget">Budget</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label>Amenities</label>
+                <div class="amenity-checkboxes">
+                    <label class="amenity-label"><input type="checkbox" value="pool"> Pool</label>
+                    <label class="amenity-label"><input type="checkbox" value="spa"> Spa</label>
+                    <label class="amenity-label"><input type="checkbox" value="gym"> Gym</label>
+                    <label class="amenity-label"><input type="checkbox" value="wifi"> Free WiFi</label>
+                    <label class="amenity-label"><input type="checkbox" value="restaurant"> Restaurant</label>
+                    <label class="amenity-label"><input type="checkbox" value="parking"> Free Parking</label>
+                </div>
+            </div>
+
+            <button class="clear-filters-btn" onclick="clearFilters()">Clear Filters</button>
+        </aside>
+
+        <!-- Results Section -->
+        <div class="results-section">
+            <!-- View Toggle & Results Count -->
+            <div class="results-header">
+                <span id="resultsCount">6 hotels found</span>
+                <div class="view-toggle">
+                    <button class="view-btn active" data-view="grid" onclick="switchView('grid')">
+                        <i class="fas fa-th-large"></i> Grid
+                    </button>
+                    <button class="view-btn" data-view="list" onclick="switchView('list')">
+                        <i class="fas fa-list"></i> List
+                    </button>
+                </div>
+            </div>
+
+            <!-- Hotels Container -->
+            <div id="hotelsContainer" class="destinations-grid">
+                <!-- Dynamic content -->
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>

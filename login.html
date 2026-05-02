@@ -4,21 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - TravelHub</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="MainLayout/style.css">
 </head>
 <body>
-    <nav class="navbar">
+<nav class="navbar">
         <a href="index.html" class="logo"> TravelHub</a>
         <div class="nav-links">
             <a href="profile.html">Profile</a>
             <a href="login.html" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>
     </nav>
 
     <div class="auth-container">
         <div class="auth-card">
             <h2>Login</h2>
-            <form id="loginForm">
+            <form id="loginForm" novalidate>
                 <div class="form-group">
                     <label>Username</label>
                     <input type="text" id="loginUsername" required>

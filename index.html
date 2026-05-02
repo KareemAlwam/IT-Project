@@ -4,14 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>TravelHub - Home</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="MainLayout/style.css">
 </head>
 <body>
-    <nav class="navbar">
+<nav class="navbar">
         <a href="index.html" class="logo"> TravelHub</a>
         <div class="nav-links">
             <a href="profile.html">Profile</a>
             <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>
     </nav>
 
@@ -19,8 +20,8 @@
         <h2 class="search-title">Where to next?</h2>
         <div class="search-options">
             <a href="Dist_Search.html" class="search-card">Destinations</a>
-            <a href="#" class="search-card">Flights</a>
-            <a href="#" class="search-card">Hotels</a>
+            <a href="Flight_Search.html" class="search-card">Flights</a>
+            <a href="Hotel_Search.html" class="search-card">Hotels</a>
         </div>
     </div>
 

@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TravelHub - Hotel Details</title>
+    <link rel="stylesheet" href="MainLayout/style.css">
+    <link rel="stylesheet" href="MainLayout/Hotel_Search.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="MainLayout/Hotel_Detail.css">
+</head>
+<body>
+    <!-- Navbar -->
+<nav class="navbar">
+        <a href="index.html" class="logo">TravelHub</a>
+        <div class="nav-links">
+            <a href="profile.html">Profile</a>
+            <a href="login.html" id="loginNavLink" class="login-link">Login</a>
+            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
+        </div>
+    </nav>
+
+    <!-- Detail Page Container -->
+    <div class="detail-page-container">
+        <a href="Hotel_Search.html" class="back-btn">
+            <i class="fas fa-arrow-left"></i> Back to Search
+        </a>
+
+        <div class="hotel-detail-card">
+            <!-- Header -->
+            <div class="hotel-detail-header">
+                <div>
+                    <div class="hotel-name" id="detailHotelName"></div>
+                    <div class="hotel-class" id="detailHotelClass"></div>
+                </div>
+                <div class="hotel-price-display">
+                    <div class="price" id="detailHotelPrice">$0</div>
+                    <div class="per-night">/night</div>
+                </div>
+            </div>
+
+            <!-- Images -->
+            <div class="hotel-images-section">
+                <div class="main-image-container">
+                    <img id="detailMainImage" src="" alt="">
+                </div>
+                <div class="thumbnail-container" id="detailThumbnailContainer">
+                    <!-- Thumbnails will be added here -->
+                </div>
+            </div>
+
+            <!-- Info Section -->
+            <div class="hotel-info-section">
+                <h3 class="info-section-title"><i class="fas fa-info-circle"></i> Hotel Details</h3>
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h4>Location</h4>
+                        <p id="detailHotelLocation"></p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Rating</h4>
+                        <p id="detailHotelRating"></p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Check-in</h4>
+                        <p id="detailCheckIn"></p>
+                    </div>
+                    <div class="info-box">
+                        <h4>Check-out</h4>
+                        <p id="detailCheckOut"></p>
+                    </div>
+                </div>
+
+                <!-- Description -->
+                <div class="description-section">
+                    <h4>About the Hotel</h4>
+                    <p id="detailHotelDescription"></p>
+                </div>
+
+                <!-- Amenities -->
+                <div class="amenities-widget">
+                    <h3 class="info-section-title"><i class="fas fa-concierge-bell"></i> Amenities</h3>
+                    <div class="amenities-list" id="detailAmenitiesList"></div>
+                </div>
+
+                <!-- Weather -->
+                <div style="margin-bottom: 2rem;">
+                    <h3 class="info-section-title"><i class="fas fa-cloud-sun"></i> Weather</h3>
+                    <div style="background: #f8fafc; padding: 1.5rem; border-radius: 12px; border: 1px solid #e2e8f0;">
+                        <div style="display: flex; gap: 2rem;" id="detailWeather"></div>
+                    </div>
+                </div>
+
+                <!-- Booking Card -->
+                <div class="booking-card">
+                    <h3><i class="fas fa-bed"></i> Book Your Room</h3>
+
+                    <div class="booking-form-row">
+                        <div class="form-group">
+                            <label>Check-in Date</label>
+                            <input type="date" id="checkInDate">
+                        </div>
+                        <div class="form-group">
+                            <label>Check-out Date</label>
+                            <input type="date" id="checkOutDate">
+                        </div>
+                    </div>
+
+                    <div class="booking-form-row">
+                        <div class="form-group">
+                            <label>Guests</label>
+                            <select id="guestCount">
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4+ Guests</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Room Type</label>
+                            <select id="roomType">
+                                <option value="standard">Standard</option>
+                                <option value="deluxe">Deluxe</option>
+                                <option value="suite">Suite</option>
+                            </select>
+                        </div>
+                    </div>
+
+<!-- Addons -->
+                    <div class="booking-addons">
+                        <label class="addon-option">
+                            <input type="checkbox" id="breakfast"> 
+                            <span>Breakfast Included (+$20/night)</span>
+                        </label>
+                        <label class="addon-option">
+                            <input type="checkbox" id="transfer"> 
+                            <span>Airport Transfer (+$30)</span>
+                        </label>
+                    </div>
+
+                    <div class="booking-total">
+                        <span class="total-label">Total Price:</span>
+                        <span class="total-amount" id="totalPrice">$0</span>
+                    </div>
+                    <button class="bookhotel-btn" onclick="bookHotel()">Book Now</button>
+                </div>
+
+                <!-- Comments -->
+                <div class="comments-section">
+                    <h3 class="info-section-title"><i class="fas fa-comments"></i> Guest Reviews</h3>
+                    <div class="comments-list" id="detailComments"></div>
+                    <div class="comment-input">
+                        <input type="text" id="commentText" placeholder="Write a review...">
+                        <button onclick="addHotelComment()"><i class="fas fa-paper-plane"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<footer>
+        <p>TravelHub © 2026 | Share your journey</p>
+    </footer>
+
+    <script src="script.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            updateNavbar();
+            loadHotelDetail();
+        });
+    </script>
+</body>
+</html>
