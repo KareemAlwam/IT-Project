@@ -1395,7 +1395,7 @@ function bookFlight() {
     const flight = JSON.parse(localStorage.getItem('selectedFlight'));
     const totalPrice = flight.price * totalPassengers;
     
-    redirectWithNotification(`✅ Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success', 'Flight_Search.html');
+    redirectWithNotification(`Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success', 'Flight_Search.html');
 }
 
 function showLoginOverlay() {
