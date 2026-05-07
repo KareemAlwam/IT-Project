@@ -1,0 +1,86 @@
+/* NewLayout/search.css
+   Search page overrides: dark surfaces + filters sidebar moved to the RIGHT side.
+   Used by Dist_Search.html, Hotel_Search.html, Flight_Search.html. */
+
+@import url('theme.css');
+
+/* ============================================
+   FLIP THE SIDEBAR TO THE RIGHT
+   The MainLayout uses .search-page-container as a flex row with
+   .filters-sidebar first and .results-section second. Reversing the
+   row direction visually swaps them while keeping the existing HTML.
+   ============================================ */
+.layout-new .search-page-container {
+    flex-direction: row-reverse;
+}
+
+/* slight visual differentiation: rounder filters card with accent border */
+.layout-new .filters-sidebar {
+    border-radius: 20px;
+    border: 1px solid #334155;
+    border-left: 3px solid #14b8a6;
+    padding: 1.6rem;
+}
+
+/* destination/hotel grid cards: rounder + slight glow on hover */
+.layout-new .dest-card {
+    border-radius: 20px;
+    border: 1px solid #334155;
+    transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+}
+.layout-new .dest-card:hover {
+    border-color: #14b8a6;
+    box-shadow: 0 12px 30px rgba(20, 184, 166, 0.25);
+}
+.layout-new .dest-card-img {
+    filter: brightness(0.92);
+}
+
+/* Flight search-specific bits (keep styles working in dark mode) */
+.layout-new .flight-search-bar {
+    background: #1e293b;
+    border-radius: 16px;
+}
+.layout-new .flight-input-group label {
+    color: #cbd5e1;
+}
+.layout-new .flight-input-group input {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+.layout-new .flight-search-btn {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .flight-search-btn:hover {
+    background: #5eead4;
+}
+
+/* Flight result card overrides */
+.layout-new .flight-card {
+    background: #1e293b;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.layout-new .flight-card:hover {
+    border-color: #14b8a6;
+}
+
+/* Hotel amenities checkbox labels */
+.layout-new .amenity-label {
+    color: #cbd5e1;
+}
+
+/* Price-range slider value text */
+.layout-new .price-range-values span {
+    color: #cbd5e1;
+}
+
+/* responsive: when stacking happens, restore natural order
+   (results above filters on mobile is fine) */
+@media (max-width: 1024px) {
+    .layout-new .search-page-container {
+        flex-direction: column;
+    }
+}

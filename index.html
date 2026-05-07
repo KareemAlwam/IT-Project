@@ -6,24 +6,53 @@
     <title>TravelHub - Home</title>
     <link rel="stylesheet" href="MainLayout/style.css">
     <link rel="stylesheet" href="MainLayout/homePage.css">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link id="layoutTheme" rel="stylesheet" href="" data-newhref="NewLayout/homePage.css">
+    <script>
+        (function(){
+            if (localStorage.getItem('layout') === 'new') {
+                document.documentElement.classList.add('layout-new');
+                var l = document.getElementById('layoutTheme');
+                if (l) l.setAttribute('href', l.getAttribute('data-newhref'));
+            }
+        })();
+    </script>
 </head>
 <body>
 <nav class="navbar">
         <a href="index.html" class="logo"> TravelHub</a>
         <div class="nav-links">
             <a href="profile.html">Profile</a>
+            <button id="layoutToggleBtn" class="layout-toggle-btn" type="button" onclick="toggleLayout()">Dark</button>
             <a href="login.html" id="loginNavLink" class="login-link">Login</a>
             <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>
     </nav>
 
     <div class="search-section">
-        <h2 class="search-title">Where to next?</h2>
-        <div class="search-options">
-            <a href="Dist_Search.html" class="search-card">Destinations</a>
-            <a href="Flight_Search.html" class="search-card">Flights</a>
-            <a href="Hotel_Search.html" class="search-card">Hotels</a>
+        <div class="hero-content">
+            <h2 class="search-title">Discover Your Next Adventure</h2>
+            <p class="search-subtitle">Explore the world with TravelHub — your gateway to unforgettable experiences.</p>
+            <div class="search-options">
+                <a href="Dist_Search.html" class="search-card search-card-primary"><i class="fas fa-map-marker-alt"></i> Find Destinations</a>
+                <a href="Flight_Search.html" class="search-card"><i class="fas fa-plane"></i> Book Flights</a>
+                <a href="Hotel_Search.html" class="search-card"><i class="fas fa-hotel"></i> Reserve Hotels</a>
+            </div>
+        </div>
+        <div class="hero-featured" style="display: none;">
+            <img src="images/pyrimds.jpeg" alt="Pyramids of Giza">
+            <div class="hero-featured-overlay">
+                <h3>Pyramids of Giza</h3>
+                <span>Ancient Wonders</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Discover from experience (posts from localStorage) -->
+    <div class="discover">
+        <h2 class="section-title">Discover from experiences</h2>
+        <div id="postsContainer" class="posts-grid">
+            <!-- loaded by JS -->
         </div>
     </div>
 
@@ -55,14 +84,6 @@
         </div>
     </div>
 
-    <!-- Discover from experience (posts from localStorage) -->
-    <div class="discover">
-        <h2 class="section-title">Discover from experiences</h2>
-        <div id="postsContainer" class="posts-grid">
-            <!-- loaded by JS -->
-        </div>
-    </div>
-
     <footer>
         <p>TravelHub © 2026 | Share your journey</p>
     </footer>
@@ -70,4 +91,3 @@
     <script src="script.js"></script>
 </body>
 </html>
-

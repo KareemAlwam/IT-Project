@@ -1,0 +1,124 @@
+/* NewLayout/detail.css
+   Detail-page overrides: dark surfaces & accent tweaks.
+   Used by Dist_Detail.html, Hotel_Detail.html, Flight_Detail.html. */
+
+@import url('theme.css');
+
+/* ============================================
+   DETAIL CARD WRAPPERS
+   ============================================ */
+.layout-new .dest-detail-card,
+.layout-new .hotel-detail-card,
+.layout-new .flight-detail-card {
+    border-radius: 22px;
+    border: 1px solid #334155;
+}
+
+/* ============================================
+   HEADERS — keep distinct gradient/colors but darker
+   ============================================ */
+.layout-new .dest-detail-header {
+    background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+}
+.layout-new .hotel-detail-header {
+    background: #020617;
+    border-bottom: 1px solid #1e293b;
+}
+.layout-new .flight-detail-header {
+    background: #020617;
+}
+
+/* ============================================
+   IMAGE SECTIONS
+   ============================================ */
+.layout-new .dest-images-section,
+.layout-new .hotel-images-section {
+    background: #0f172a;
+    border-bottom: 1px solid #1e293b;
+}
+
+/* ============================================
+   INFO / DESCRIPTION SECTIONS
+   ============================================ */
+.layout-new .dest-info-section,
+.layout-new .hotel-info-section,
+.layout-new .flight-info-section {
+    background: #1e293b;
+}
+.layout-new .description-section h4 {
+    color: #5eead4;
+}
+.layout-new .description-section p {
+    color: #cbd5e1;
+}
+.layout-new .hotel-info-section .description-section {
+    background: #0f172a;
+    border-color: #334155;
+}
+
+/* events */
+.layout-new .event-item {
+    background: #0f172a;
+    border-color: #334155;
+}
+.layout-new .event-name {
+    color: #e2e8f0;
+}
+.layout-new .event-time {
+    background: #134e4a;
+    color: #5eead4;
+}
+
+/* amenities */
+.layout-new .amenity-tag {
+    background: #134e4a;
+    color: #5eead4;
+}
+
+/* booking card on detail pages */
+.layout-new .booking-card {
+    background: linear-gradient(135deg, #0f766e 0%, #134e4a 100%);
+}
+.layout-new .booking-card .booking-total {
+    background: rgba(15, 23, 42, 0.4);
+    border-radius: 12px;
+    padding: 1rem;
+    border-top: none;
+}
+.layout-new .booking-card input[type="date"],
+.layout-new .booking-card input[type="time"],
+.layout-new .booking-card input[type="text"],
+.layout-new .booking-card select {
+    background: #0f172a;
+    color: #e2e8f0;
+    border: 1px solid #334155;
+}
+
+/* flight route panel */
+.layout-new .flight-route-detail {
+    background: #0f172a;
+    border-bottom: 1px solid #1e293b;
+}
+.layout-new .flight-route-detail .time,
+.layout-new .flight-route-detail .airport-code {
+    color: #f1f5f9;
+}
+.layout-new .flight-route-detail .city-name,
+.layout-new .flight-route-detail .date {
+    color: #94a3b8;
+}
+.layout-new .route-arrow-detail {
+    color: #5eead4;
+}
+
+/* class option pills (flight) */
+.layout-new .booking-options .class-option {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.layout-new .booking-options .class-option.selected {
+    background: #14b8a6;
+    color: #0f172a;
+    border-color: #14b8a6;
+}

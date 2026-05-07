@@ -6,12 +6,22 @@
     <title>My Profile - TravelHub</title>
     <link rel="stylesheet" href="MainLayout/style.css">
     <link rel="stylesheet" href="MainLayout/profile.css">
-
+    <link id="layoutTheme" rel="stylesheet" href="" data-newhref="NewLayout/theme.css">
+    <script>
+        (function(){
+            if (localStorage.getItem('layout') === 'new') {
+                document.documentElement.classList.add('layout-new');
+                var l = document.getElementById('layoutTheme');
+                if (l) l.setAttribute('href', l.getAttribute('data-newhref'));
+            }
+        })();
+    </script>
 </head>
 <body>
 <nav class="navbar">
         <a href="index.html" class="logo"> TravelHub</a>
         <div class="nav-links">
+            <button id="layoutToggleBtn" class="layout-toggle-btn" type="button" onclick="toggleLayout()">Dark</button>
             <a href="login.html" id="profileLoginLink" class="login-link">Login</a>
             <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>

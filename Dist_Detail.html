@@ -7,6 +7,16 @@
     <link rel="stylesheet" href="MainLayout/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="MainLayout/Dist_Detail.css">
+    <link id="layoutTheme" rel="stylesheet" href="" data-newhref="NewLayout/detail.css">
+    <script>
+        (function(){
+            if (localStorage.getItem('layout') === 'new') {
+                document.documentElement.classList.add('layout-new');
+                var l = document.getElementById('layoutTheme');
+                if (l) l.setAttribute('href', l.getAttribute('data-newhref'));
+            }
+        })();
+    </script>
 </head>
 <body>
     <!-- Navbar -->
@@ -14,6 +24,7 @@
         <a href="index.html" class="logo">TravelHub</a>
         <div class="nav-links">
             <a href="profile.html">Profile</a>
+            <button id="layoutToggleBtn" class="layout-toggle-btn" type="button" onclick="toggleLayout()">Dark</button>
             <a href="login.html" id="loginNavLink" class="login-link">Login</a>
             <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>

@@ -85,8 +85,8 @@ function loadPostsToHome() {
     container.innerHTML = '';
     posts.forEach((post, index) => {
         container.innerHTML += `
-        <div class="post-item" data-index="${index}">
-            <div class="post-details">
+        <div class="post" data-index="${index}">
+            <div class="post-info">
                 <div class="post-title">${post.title}</div>
                 <p>${post.content.substring(0, 100)}${post.content.length > 100 ? '…' : ''}</p>
                 <small>by ${post.author}</small>
@@ -278,7 +278,10 @@ function renderItems(opts) {
         countEl.textContent = `${opts.items.length} ${opts.label}${opts.items.length !== 1 ? 's' : ''} found`;
     }
 
-    container.innerHTML = opts.items.map(item => opts.cardBuilder(item, opts.view)).join('');
+    container.innerHTML = '';
+    opts.items.forEach(item => {
+        container.innerHTML += opts.cardBuilder(item, opts.view);
+    });
 }
 
 // Save selected item to localStorage and navigate to its detail page.
@@ -833,12 +836,14 @@ function renderDetailComments(item) {
         return;
     }
 
-    list.innerHTML = item.comments.map(c => `
+    list.innerHTML = '';
+    item.comments.forEach(c => {
+        list.innerHTML += `
         <div class="comment">
             <div class="comment-author"><i class="fas fa-user-circle"></i> ${c.author}</div>
             <div class="comment-text">${c.text}</div>
-        </div>
-    `).join('');
+        </div>`;
+    });
 }
 
 // Add a comment to whichever item is currently being viewed.
@@ -898,12 +903,14 @@ function loadDestinationDetail() {
     });
 
     const eventsList = document.getElementById('detailEventsList');
-    eventsList.innerHTML = dest.events.map(event => `
+    eventsList.innerHTML = '';
+    dest.events.forEach(event => {
+        eventsList.innerHTML += `
         <div class="event-item">
             <span class="event-name"><i class="fas fa-calendar"></i> ${event.name}</span>
             <span class="event-time">${event.time}</span>
-        </div>
-    `).join('');
+        </div>`;
+    });
 
     document.getElementById('totalPrice').textContent = `$${dest.price}`;
     localStorage.setItem('selectedDestinationPrice', dest.price);
@@ -957,9 +964,11 @@ function loadHotelDetail() {
         thumbContainer.appendChild(thumb);
     });
 
-    document.getElementById('detailAmenitiesList').innerHTML = hotel.amenities
-        .map(a => `<span class="amenity-tag"><i class="fas fa-check"></i> ${a}</span>`)
-        .join('');
+    const amenitiesList = document.getElementById('detailAmenitiesList');
+    amenitiesList.innerHTML = '';
+    hotel.amenities.forEach(a => {
+        amenitiesList.innerHTML += `<span class="amenity-tag"><i class="fas fa-check"></i> ${a}</span>`;
+    });
 
     document.getElementById('detailWeather').innerHTML = `
         <div><span style="font-size: 1.5rem; font-weight: bold; color: #1e6f5c;">${hotel.weather.temp}°C</span></div>
@@ -1063,9 +1072,40 @@ function addComment() {
 }
 
 // ============================================================
+// ---------- Layout (theme) toggle ----------
+// Each page has a <link id="layoutTheme"> + a tiny inline pre-paint
+// script in <head> that reads localStorage('layout') and sets the
+// href + body.layout-new class before paint to avoid flash.
+// data-newhref on the <link> tells us which NewLayout file this
+// page should load when the new layout is active.
+// ============================================================
+function applyLayout(name) {
+    const link = document.getElementById('layoutTheme');
+    const newHref = link ? link.getAttribute('data-newhref') : '';
+    if (name === 'new') {
+        document.documentElement.classList.add('layout-new');
+        document.body.classList.add('layout-new');
+        if (link && newHref) link.setAttribute('href', newHref);
+    } else {
+        document.documentElement.classList.remove('layout-new');
+        document.body.classList.remove('layout-new');
+        if (link) link.setAttribute('href', '');
+    }
+    const btn = document.getElementById('layoutToggleBtn');
+    if (btn) btn.textContent = name === 'new' ? 'Light' : 'Dark';
+}
+
+function toggleLayout() {
+    const next = localStorage.getItem('layout') === 'new' ? 'main' : 'new';
+    localStorage.setItem('layout', next);
+    applyLayout(next);
+}
+
+// ============================================================
 // ---------- Initialize page-specific logic ----------
 // ============================================================
 document.addEventListener('DOMContentLoaded', () => {
+    applyLayout(localStorage.getItem('layout') === 'new' ? 'new' : 'main');
     updateNavbar();
 
     if (document.getElementById('postsContainer')) {

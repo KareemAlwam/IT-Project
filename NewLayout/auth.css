@@ -1,0 +1,35 @@
+/* NewLayout/auth.css
+   Auth (login + register) overrides. */
+
+@import url('theme.css');
+
+/* center container gets a subtle accent background glow */
+.layout-new .auth-container {
+    background:
+        radial-gradient(600px 300px at 50% 0%, rgba(20, 184, 166, 0.15) 0%, transparent 70%),
+        transparent;
+}
+
+.layout-new .auth-card {
+    border-radius: 20px;
+    border: 1px solid #334155;
+    border-top: 3px solid #14b8a6;
+    padding: 2.5rem 2rem;
+}
+.layout-new .auth-card h2 {
+    color: #5eead4;
+}
+.layout-new .auth-card input,
+.layout-new .auth-card textarea {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+.layout-new .auth-card input:focus,
+.layout-new .auth-card textarea:focus {
+    outline: none;
+    border-color: #14b8a6;
+}
+.layout-new .error-msg {
+    color: #fca5a5;
+}

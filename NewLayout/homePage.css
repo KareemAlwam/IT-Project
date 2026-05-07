@@ -1,0 +1,290 @@
+/* NewLayout/homePage.css
+   Major homepage overrides — only applied when .layout-new is active.
+   Imports the global theme so the dark base is always there. */
+
+@import url('theme.css');
+
+/* ============================================
+   HERO / SEARCH SECTION
+   Two-column layout: text + buttons on left, featured card on right
+   ============================================ */
+.layout-new .search-section {
+    background: #2c3441;
+    padding: 5rem 4rem 6rem;
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 3rem;
+    align-items: center;
+    text-align: left;
+}
+
+.layout-new .hero-content {
+    max-width: 560px;
+}
+
+.layout-new .search-title {
+    font-size: 3.5rem;
+    line-height: 1.1;
+    color: #f8fafc;
+    font-weight: 800;
+    margin-bottom: 1.2rem;
+    background: none;
+    -webkit-text-fill-color: initial;
+}
+
+.layout-new .search-subtitle {
+    display: block;
+    color: #cbd5e1;
+    font-size: 1.05rem;
+    line-height: 1.6;
+    margin-bottom: 2.2rem;
+    max-width: 480px;
+}
+
+.layout-new .search-options {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+    gap: 1rem;
+}
+
+/* default outline pill style for "Book Flights" / "Reserve Hotels" */
+.layout-new .search-card {
+    background: rgba(255, 255, 255, 0.06);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    color: #e2e8f0;
+    padding: 0.9rem 1.8rem;
+    border-radius: 999px;
+    box-shadow: none;
+    font-size: 0.98rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+}
+.layout-new .search-card i {
+    font-size: 0.95rem;
+    opacity: 0.9;
+}
+.layout-new .search-card:hover {
+    background: rgba(255, 255, 255, 0.12);
+    border-color: rgba(255, 255, 255, 0.35);
+    color: #f8fafc;
+    transform: translateY(-1px);
+    box-shadow: none;
+}
+
+/* primary filled pill for "Find Destinations" */
+.layout-new .search-card-primary {
+    background: #ffffff;
+    color: #1e2a3e;
+    border-color: #ffffff;
+}
+.layout-new .search-card-primary i {
+    color: #1e6f5c;
+    opacity: 1;
+}
+.layout-new .search-card-primary:hover {
+    background: #f1f5f9;
+    color: #1e2a3e;
+    border-color: #f1f5f9;
+}
+
+/* right column: featured destination card */
+.layout-new .hero-featured {
+    display: block;
+    position: relative;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+    aspect-ratio: 1 / 1;
+    max-width: 420px;
+    justify-self: center;
+    width: 100%;
+}
+.layout-new .hero-featured img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+.layout-new .hero-featured-overlay {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.4rem 1.4rem 1.2rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.92) 0%, rgba(15, 23, 42, 0.6) 50%, transparent 100%);
+    color: #f8fafc;
+}
+.layout-new .hero-featured-overlay h3 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 0.2rem;
+}
+.layout-new .hero-featured-overlay span {
+    font-size: 0.95rem;
+    color: #cbd5e1;
+}
+
+/* ============================================
+   RECOMMENDATIONS — bold asymmetric grid
+   First card spans 2 rows, others stack to the right
+   ============================================ */
+.layout-new .recommendations {
+    background: #0f172a;
+    padding: 4rem 2rem;
+}
+.layout-new .section-title {
+    color: #f1f5f9;
+    border-left: 5px solid #14b8a6;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+.layout-new .recommendations .cards {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    grid-auto-rows: 220px;
+    gap: 1.2rem;
+}
+.layout-new .recommendations .card {
+    background: #1e293b;
+    border-radius: 18px;
+    padding: 0;
+    margin-bottom: 0;
+    overflow: hidden;
+    position: relative;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.25s, box-shadow 0.25s;
+    cursor: pointer;
+}
+.layout-new .recommendations .card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 14px 40px rgba(20, 184, 166, 0.25);
+}
+.layout-new .recommendations .card:first-child {
+    grid-column: span 1;
+    grid-row: span 2;
+}
+.layout-new .recommendations .card-img {
+    height: 100%;
+    width: 100%;
+    object-fit: cover;
+    transition: transform 0.4s;
+}
+.layout-new .recommendations .card:hover .card-img {
+    transform: scale(1.06);
+}
+.layout-new .recommendations .card-content {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    padding: 1.5rem 1.2rem 1.2rem;
+    background: linear-gradient(to top, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.5) 60%, transparent 100%);
+    color: #f1f5f9;
+}
+.layout-new .recommendations .card-title {
+    color: #f1f5f9;
+    font-size: 1.3rem;
+    margin-bottom: 0.3rem;
+}
+.layout-new .recommendations .card-content p {
+    color: #cbd5e1;
+    font-size: 0.9rem;
+}
+
+/* ============================================
+   DISCOVER FROM EXPERIENCES
+   Wider posts with accent left bar
+   ============================================ */
+.layout-new .discover {
+    background: #020617;
+    padding: 4rem 2rem;
+}
+.layout-new .discover .section-title {
+    color: #f1f5f9;
+    border-left-color: #5eead4;
+}
+.layout-new .posts-grid {
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 1.5rem;
+}
+.layout-new .post {
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-left: 4px solid #14b8a6;
+    border-radius: 14px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+    transition: transform 0.2s, border-left-color 0.2s, box-shadow 0.2s;
+}
+.layout-new .post:hover {
+    transform: translateY(-3px);
+    border-left-color: #5eead4;
+    box-shadow: 0 12px 32px rgba(20, 184, 166, 0.2);
+}
+.layout-new .post-info {
+    padding: 1.2rem 1.4rem;
+}
+.layout-new .post-title {
+    color: #f1f5f9;
+    font-size: 1.15rem;
+}
+.layout-new .post-info p {
+    color: #94a3b8;
+    margin-top: 0.4rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.layout-new .empty-posts {
+    color: #5eead4;
+    background: #1e293b;
+    border-radius: 12px;
+    padding: 3rem 2rem;
+    border: 1px dashed #334155;
+    grid-column: 1 / -1;
+}
+
+/* ============================================
+   RESPONSIVE
+   ============================================ */
+@media (max-width: 900px) {
+    .layout-new .search-section {
+        grid-template-columns: 1fr;
+        padding: 3.5rem 2rem 4rem;
+        text-align: center;
+    }
+    .layout-new .hero-content {
+        max-width: 100%;
+    }
+    .layout-new .search-subtitle {
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .layout-new .search-options {
+        justify-content: center;
+    }
+    .layout-new .hero-featured {
+        max-width: 360px;
+        aspect-ratio: 4 / 3;
+    }
+    .layout-new .recommendations .cards {
+        grid-template-columns: 1fr 1fr;
+        grid-auto-rows: 200px;
+    }
+    .layout-new .recommendations .card:first-child {
+        grid-column: span 2;
+    }
+}
+@media (max-width: 600px) {
+    .layout-new .search-title {
+        font-size: 2.3rem;
+    }
+    .layout-new .recommendations .cards {
+        grid-template-columns: 1fr;
+        grid-auto-rows: 220px;
+    }
+    .layout-new .recommendations .card:first-child {
+        grid-column: span 1;
+    }
+}

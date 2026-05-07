@@ -1,0 +1,319 @@
+/* NewLayout/theme.css
+   Global dark theme overrides. Loaded on every page when the new layout is
+   active. These rules come AFTER the MainLayout link tags so they override.
+   We never edit MainLayout/* — every rule is scoped under .layout-new which
+   is added to <html> by the pre-paint inline script and to <body> by JS. */
+
+/* ============================================
+   GLOBAL SURFACES
+   ============================================ */
+html.layout-new,
+body.layout-new {
+    background: #0f172a;
+    color: #e2e8f0;
+}
+
+/* ============================================
+   NAVBAR
+   ============================================ */
+.layout-new .navbar {
+    background: #111827;
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+    border-bottom: 1px solid #1f2937;
+}
+.layout-new .logo {
+    color: #5eead4;
+}
+.layout-new .nav-links a {
+    color: #e2e8f0;
+}
+.layout-new .nav-links a:hover {
+    color: #5eead4;
+}
+.layout-new .login-link {
+    background: #14b8a6;
+    color: #0f172a !important;
+}
+.layout-new .username-display {
+    background: #134e4a;
+    color: #5eead4;
+}
+.layout-new .logout-btn {
+    background: #b91c1c;
+}
+.layout-new .logout-btn:hover {
+    background: #7f1d1d;
+}
+
+/* layout toggle button (visible in BOTH layouts) */
+.layout-toggle-btn {
+    background: transparent;
+    border: 1px solid #cbd5e1;
+    color: #2c3e50;
+    padding: 0.4rem 0.9rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: 500;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: background 0.2s, color 0.2s, border-color 0.2s;
+}
+.layout-toggle-btn:hover {
+    background: #1e6f5c;
+    color: white;
+    border-color: #1e6f5c;
+}
+.layout-new .layout-toggle-btn {
+    border-color: #5eead4;
+    color: #5eead4;
+}
+.layout-new .layout-toggle-btn:hover {
+    background: #14b8a6;
+    color: #0f172a;
+    border-color: #14b8a6;
+}
+
+/* ============================================
+   SHARED CARDS / SURFACES
+   ============================================ */
+.layout-new .dest-card,
+.layout-new .post,
+.layout-new .card,
+.layout-new .auth-card,
+.layout-new .filters-sidebar,
+.layout-new .modal-content,
+.layout-new .dest-detail-card,
+.layout-new .hotel-detail-card,
+.layout-new .flight-detail-card {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+.layout-new .dest-card-title,
+.layout-new .post-title,
+.layout-new .card h2,
+.layout-new .auth-card h2 {
+    color: #f1f5f9;
+}
+.layout-new .dest-card-meta {
+    color: #94a3b8;
+}
+.layout-new .dest-card-price {
+    color: #5eead4;
+}
+
+/* ============================================
+   SEARCH PAGE HEADER (banner above results)
+   ============================================ */
+.layout-new .search-page-header {
+    background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%);
+}
+.layout-new .search-page-header h1 {
+    color: #f1f5f9;
+}
+.layout-new .search-input {
+    background: #1e293b;
+    color: #e2e8f0;
+    border-color: #14b8a6;
+}
+.layout-new .search-input::placeholder {
+    color: #64748b;
+}
+.layout-new .search-btn {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .search-btn:hover {
+    background: #5eead4;
+}
+
+/* ============================================
+   FILTERS SIDEBAR
+   ============================================ */
+.layout-new .filters-sidebar h3 {
+    color: #5eead4;
+}
+.layout-new .filter-group label {
+    color: #cbd5e1;
+}
+.layout-new .filter-select {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+.layout-new .clear-filters-btn {
+    background: #134e4a;
+    color: #5eead4;
+    border-color: #14b8a6;
+}
+.layout-new .clear-filters-btn:hover {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .checkbox-label {
+    color: #cbd5e1;
+}
+
+/* ============================================
+   RESULTS / VIEW TOGGLE
+   ============================================ */
+.layout-new .results-header span {
+    color: #cbd5e1;
+}
+.layout-new .view-btn {
+    background: #1e293b;
+    color: #cbd5e1;
+    border-color: #334155;
+}
+.layout-new .view-btn.active,
+.layout-new .view-btn:hover {
+    background: #14b8a6;
+    color: #0f172a;
+    border-color: #14b8a6;
+}
+
+/* ============================================
+   DETAIL PAGE CHROME
+   ============================================ */
+.layout-new .back-btn {
+    color: #5eead4;
+}
+.layout-new .back-btn:hover {
+    color: #99f6e4;
+}
+.layout-new .info-section-title {
+    color: #f1f5f9;
+    border-bottom-color: #14b8a6;
+}
+.layout-new .info-box {
+    background: #0f172a;
+    border-color: #334155;
+}
+.layout-new .info-box h4 {
+    color: #94a3b8;
+}
+.layout-new .info-box p {
+    color: #e2e8f0;
+}
+.layout-new .info-box .sub-info {
+    color: #94a3b8;
+}
+
+/* booking card stays distinct (gradient) but tweaked */
+.layout-new .booking-card {
+    background: linear-gradient(135deg, #134e4a 0%, #0f172a 100%);
+}
+.layout-new .detail-book-btn {
+    background: #5eead4;
+    color: #0f172a;
+}
+
+/* ============================================
+   COMMENTS
+   ============================================ */
+.layout-new .comment {
+    background: #0f172a;
+    border-left-color: #14b8a6;
+}
+.layout-new .comment-author {
+    color: #5eead4;
+}
+.layout-new .comment-text {
+    color: #cbd5e1;
+}
+.layout-new .comment-input input {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+.layout-new .comment-input button {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .comment-input button:hover {
+    background: #5eead4;
+}
+
+/* ============================================
+   FORMS (auth + profile)
+   ============================================ */
+.layout-new input,
+.layout-new textarea,
+.layout-new select {
+    background: #0f172a;
+    color: #e2e8f0;
+    border-color: #334155;
+}
+.layout-new .auth-card label,
+.layout-new label {
+    color: #cbd5e1;
+}
+.layout-new .auth-card button,
+.layout-new button[id="addPostBtn"] {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .auth-card button:hover {
+    background: #5eead4;
+}
+.layout-new .auth-card p,
+.layout-new .auth-card p a {
+    color: #94a3b8;
+}
+.layout-new .auth-card p a {
+    color: #5eead4;
+}
+
+/* profile post items */
+.layout-new .post-item {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+.layout-new .delete-btn {
+    background: #b91c1c;
+    color: white;
+}
+
+/* footer */
+.layout-new footer {
+    background: #020617;
+    color: #94a3b8;
+}
+
+/* notifications */
+.layout-new .custom-notification {
+    background: #1e293b;
+    color: #e2e8f0;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.7);
+}
+.layout-new .custom-notification-message {
+    color: #e2e8f0;
+}
+
+/* login overlay (detail-page modal) */
+.layout-new .login-overlay-content {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+.layout-new .login-overlay-content h2 {
+    color: #f1f5f9;
+}
+.layout-new .login-overlay-content p {
+    color: #94a3b8;
+}
+.layout-new .btn-login {
+    background: #14b8a6;
+    color: #0f172a;
+}
+.layout-new .btn-login:hover {
+    background: #5eead4;
+}
+.layout-new .btn-close {
+    background: #334155;
+    color: #e2e8f0;
+}
+.layout-new .btn-close:hover {
+    background: #475569;
+}
