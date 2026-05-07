@@ -1,6 +1,7 @@
-/* login.css - Styles for login.html */
+/* login-register.css - Shared styles for login.html & register.html
+   (was previously two identical files: login.css + register.css) */
 
-/* auth pages */
+/* auth page layout */
 .auth-container {
     display: flex;
     justify-content: center;
@@ -21,23 +22,24 @@
     text-align: center;
 }
 
-/* form controls (were previously in MainLayout/style.css) */
-.form-group {
+/* auth form controls (scoped to auth-card so they don't leak globally) */
+.auth-card .form-group {
     margin-bottom: 1rem;
 }
-label {
+.auth-card label {
     font-weight: bold;
     display: block;
     margin-bottom: 0.3rem;
 }
-input, textarea {
+.auth-card input,
+.auth-card textarea {
     width: 100%;
     padding: 10px;
     border: 1px solid #cbd5e1;
     border-radius: 12px;
     font-size: 1rem;
 }
-button {
+.auth-card button {
     background: #1e6f5c;
     color: white;
     border: none;
@@ -45,15 +47,11 @@ button {
     border-radius: 40px;
     cursor: pointer;
     font-size: 1rem;
-}
-button:hover {
-    background: #155a4a;
-}
-
-/* login specifics */
-.auth-card button {
     width: 100%;
     margin-top: 1rem;
+}
+.auth-card button:hover {
+    background: #155a4a;
 }
 .auth-card p {
     margin-top: 1rem;
@@ -65,5 +63,3 @@ button:hover {
     font-size: 0.8rem;
     margin-top: 5px;
 }
-
-

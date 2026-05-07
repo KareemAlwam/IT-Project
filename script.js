@@ -15,7 +15,6 @@ function logout() {
 
 // Custom Notification System
 function showNotification(message, type = 'info') {
-    // Remove existing notifications
     const existing = document.querySelector('.custom-notification');
     if (existing) existing.remove();
 
@@ -38,7 +37,6 @@ function showNotification(message, type = 'info') {
     `;
     document.body.appendChild(notification);
 
-    // Auto remove after 4 seconds
     setTimeout(() => {
         if (notification.parentElement) notification.remove();
     }, 4000);
@@ -84,8 +82,7 @@ function loadPostsToHome() {
         return;
     }
 
-    container.innerHTML = ''; // clear first
-
+    container.innerHTML = '';
     posts.forEach((post, index) => {
         container.innerHTML += `
         <div class="post-item" data-index="${index}">
@@ -97,6 +94,7 @@ function loadPostsToHome() {
         </div>`;
     });
 }
+
 //===============================================================
 // ---------- Profile page logic ----------
 //===============================================================
@@ -106,7 +104,6 @@ function loadMyPosts() {
 
     const currentUser = getCurrentUser();
     const allPosts = JSON.parse(localStorage.getItem('travelPosts')) || [];
-
     const myPosts = allPosts.filter(p => p.author === currentUser);
 
     if (myPosts.length === 0) {
@@ -115,10 +112,8 @@ function loadMyPosts() {
     }
 
     container.innerHTML = '';
-
     allPosts.forEach((post, index) => {
         if (post.author !== currentUser) return;
-
         container.innerHTML += `
         <div class="post-item">
             <div class="post-details">
@@ -135,11 +130,9 @@ function loadMyPosts() {
 
 function deletePost(index) {
     let allPosts = JSON.parse(localStorage.getItem('travelPosts')) || [];
-
     if (index >= 0 && index < allPosts.length) {
         allPosts.splice(index, 1);
         localStorage.setItem('travelPosts', JSON.stringify(allPosts));
-
         loadMyPosts();
     }
 }
@@ -148,7 +141,7 @@ function addNewPost() {
     const title = document.getElementById('postTitle').value.trim();
     const content = document.getElementById('postContent').value.trim();
     const errorDiv = document.getElementById('formError');
-    
+
     if (title === "") {
         errorDiv.textContent = "Title is required.";
         return false;
@@ -163,63 +156,57 @@ function addNewPost() {
     }
     errorDiv.textContent = "";
 
-if (!getCurrentUser()) {
+    if (!getCurrentUser()) {
         showNotification("Please login first.", "error");
         window.location.href = "login.html";
         return false;
     }
-    
+
     const newPost = {
         title: title,
         content: content,
         author: getCurrentUser(),
         createdAt: new Date().toISOString()
     };
-    
+
     let allPosts = JSON.parse(localStorage.getItem('travelPosts')) || [];
     allPosts.push(newPost);
     localStorage.setItem('travelPosts', JSON.stringify(allPosts));
-    
+
     document.getElementById('postTitle').value = '';
     document.getElementById('postContent').value = '';
-    
+
     loadMyPosts();
     showNotification("Post published!", "success");
     return true;
 }
+
 //===============================================================
 //       ---------- Login & Register logic ----------
 //===============================================================
-
 function handleLogin(e) {
-    e.preventDefault();// stop form from submitting and refreshing the page
+    e.preventDefault();
     const username = document.getElementById('loginUsername').value.trim();
     const password = document.getElementById('loginPassword').value.trim();
     const errorDiv = document.getElementById('loginError');
-    
+
     if (!username || !password) {
         errorDiv.textContent = "Both fields are required.";
         return;
     }
-    
+
     const users = JSON.parse(localStorage.getItem('users')) || [];
     const user = users.find(u => u.username === username && u.password === password);
     if (!user) {
         errorDiv.textContent = "Invalid username or password.";
         return;
     }
-    
+
     setCurrentUser(username);
-    
-    // Check if user was trying to book something before login
+
     const redirectPage = localStorage.getItem('redirectAfterLogin');
     localStorage.removeItem('redirectAfterLogin');
-    
-    if (redirectPage) {
-        window.location.href = redirectPage;
-    } else {
-        window.location.href = "index.html";
-    }
+    window.location.href = redirectPage || "index.html";
 }
 
 function handleRegister(e) {
@@ -229,7 +216,7 @@ function handleRegister(e) {
     const password = document.getElementById('regPassword').value.trim();
     const confirm = document.getElementById('regConfirmPassword').value.trim();
     const errorDiv = document.getElementById('regError');
-    
+
     if (!username || !email || !password || !confirm) {
         errorDiv.textContent = "All fields are required.";
         return;
@@ -246,23 +233,83 @@ function handleRegister(e) {
         errorDiv.textContent = "Enter a valid email address.";
         return;
     }
-    
+
     const users = JSON.parse(localStorage.getItem('users')) || [];
     if (users.find(u => u.username === username)) {
         errorDiv.textContent = "Username already exists.";
         return;
     }
-    
+
     users.push({ username, email, password });
     localStorage.setItem('users', JSON.stringify(users));
     setCurrentUser(username);
     window.location.href = "index.html";
 }
 
-// ============================================================================================================================================================================================
-// ---------- Destination Search Page Logic ----------
-// ============================================================================================================================================================================================
+//===============================================================
+// ---------- Generic search-page helpers ----------
+// Used by destinations / hotels / flights search pages.
+// Each page builds its own card HTML via a small `cardBuilder`
+// function and lets these helpers handle the container, results
+// count, empty state, and grid/list switching.
+//===============================================================
 
+// Render a list of items into a container, with results count + empty state.
+// opts: { containerId, items, view, label, cardBuilder, useGridList }
+function renderItems(opts) {
+    const container = document.getElementById(opts.containerId);
+    if (!container) return;
+
+    if (opts.useGridList) {
+        container.className = `destinations-${opts.view}`;
+    }
+    container.innerHTML = '';
+
+    const countEl = document.getElementById('resultsCount');
+
+    if (opts.items.length === 0) {
+        const colSpan = opts.useGridList ? 'grid-column: 1/-1; ' : '';
+        container.innerHTML = `<div class="empty-posts" style="${colSpan}text-align: center; padding: 3rem;">No ${opts.label}s match your filters.</div>`;
+        if (countEl) countEl.textContent = `0 ${opts.label}s found`;
+        return;
+    }
+
+    if (countEl) {
+        countEl.textContent = `${opts.items.length} ${opts.label}${opts.items.length !== 1 ? 's' : ''} found`;
+    }
+
+    container.innerHTML = opts.items.map(item => opts.cardBuilder(item, opts.view)).join('');
+}
+
+// Save selected item to localStorage and navigate to its detail page.
+function openItemDetail(item, storageKey, detailUrl) {
+    if (!item) return;
+    localStorage.setItem(storageKey, JSON.stringify(item));
+    window.location.href = detailUrl;
+}
+
+// Booking guard: if not logged in, save where to come back and redirect to login.
+function requireLogin(redirectPage) {
+    if (getCurrentUser()) return true;
+    localStorage.setItem('redirectAfterLogin', redirectPage);
+    window.location.href = 'login.html';
+    return false;
+}
+
+// Toggle grid/list view on whichever search page is active.
+function switchView(view) {
+    if (document.getElementById('hotelsContainer')) {
+        currentHotelView = view;
+        renderHotels();
+    } else if (document.getElementById('destinationsContainer')) {
+        currentView = view;
+        renderDestinations();
+    }
+}
+
+// ============================================================
+// ---------- Destination Search Page ----------
+// ============================================================
 const destinationsData = [
     {
         id: 1,
@@ -396,268 +443,62 @@ const destinationsData = [
 
 let currentView = 'grid';
 let currentDestinations = [...destinationsData];
-let activeDestination = null;
 
-function renderDestinations() {
-    const container = document.getElementById('destinationsContainer');
-    if (!container) return;
-
-    container.className = `destinations-${currentView}`;
-    container.innerHTML = '';
-
-    if (currentDestinations.length === 0) {
-        container.innerHTML = '<div class="empty-posts" style="grid-column: 1/-1; text-align: center; padding: 3rem;">No destinations match your filters.</div>';
-        document.getElementById('resultsCount').textContent = '0 destinations found';
-        return;
-    }
-
-    document.getElementById('resultsCount').textContent = `${currentDestinations.length} destination${currentDestinations.length !== 1 ? 's' : ''} found`;
-
-    currentDestinations.forEach(dest => {
-        if (currentView === 'grid') {
-            container.innerHTML += `
-                <div class="dest-card" onclick="openDetail(${dest.id})">
-                    <img class="dest-card-img" src="${dest.images[0]}" alt="${dest.name}">
-                    <div class="dest-card-content">
-                        <div class="dest-card-title">${dest.name}</div>
-                        <div class="dest-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${dest.location}</span>
-                            <span class="dest-card-rating"><i class="fas fa-star"></i> ${dest.rating}</span>
-                        </div>
-                        <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                            <span class="dest-card-price">$${dest.price}</span>
-                            <span style="text-transform: capitalize;">${dest.category}</span>
-                        </div>
-                    </div>
+// Builds the HTML for a single destination card (grid or list view)
+function destinationCard(d, view) {
+    const desc = view === 'list'
+        ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${d.description.substring(0, 120)}...</p>`
+        : '';
+    return `
+        <div class="dest-card" onclick="openDetail(${d.id})">
+            <img class="dest-card-img" src="${d.images[0]}" alt="${d.name}">
+            <div class="dest-card-content">
+                <div class="dest-card-title">${d.name}</div>
+                <div class="dest-card-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${d.location}</span>
+                    <span class="dest-card-rating"><i class="fas fa-star"></i> ${d.rating}</span>
                 </div>
-            `;
-        } else if (currentView === 'list') {
-            container.innerHTML += `
-                <div class="dest-card" onclick="openDetail(${dest.id})">
-                    <img class="dest-card-img" src="${dest.images[0]}" alt="${dest.name}">
-                    <div class="dest-card-content">
-                        <div class="dest-card-title">${dest.name}</div>
-                        <div class="dest-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${dest.location}</span>
-                            <span class="dest-card-rating"><i class="fas fa-star"></i> ${dest.rating}</span>
-                        </div>
-                        <p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${dest.description.substring(0, 120)}...</p>
-                        <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                            <span class="dest-card-price">$${dest.price}</span>
-                            <span style="text-transform: capitalize;">${dest.category}</span>
-                        </div>
-                    </div>
+                ${desc}
+                <div class="dest-card-meta" style="margin-top: 0.5rem;">
+                    <span class="dest-card-price">$${d.price}</span>
+                    <span style="text-transform: capitalize;">${d.category}</span>
                 </div>
-            `;
-        }
-    });
+            </div>
+        </div>`;
 }
 
-
+function renderDestinations() {
+    renderItems({
+        containerId: 'destinationsContainer',
+        items: currentDestinations,
+        view: currentView,
+        label: 'destination',
+        cardBuilder: destinationCard,
+        useGridList: true
+    });
+}
 
 function applyFilters() {
     const search = document.getElementById('searchInput')?.value.toLowerCase() || '';
     const minRating = parseFloat(document.getElementById('ratingFilter')?.value || 0);
     const location = document.getElementById('locationFilter')?.value || 'all';
 
-    // Search by name or location, filter by rating and location
-    currentDestinations = destinationsData.filter(dest => {
-        const matchesSearch = dest.name.toLowerCase().includes(search) || 
-                             dest.location.toLowerCase().includes(search);
-        const matchesRating = dest.rating >= minRating;
-        const matchesLocation = location === 'all' || dest.country === location;
-        return matchesSearch && matchesRating && matchesLocation;
-    });
+    currentDestinations = destinationsData.filter(dest =>
+        (dest.name.toLowerCase().includes(search) || dest.location.toLowerCase().includes(search)) &&
+        dest.rating >= minRating &&
+        (location === 'all' || dest.country === location)
+    );
 
     renderDestinations();
 }
 
-
-
-// ============================================================================================================================================================================================
-// ---------- Destination Detail Page Functions (NEW) ----------
-// ============================================================================================================================================================================================
-
 function openDetail(id) {
-    const destination = destinationsData.find(d => d.id === id);
-    if (!destination) return;
-
-    // Store destination data in localStorage for the detail page
-    localStorage.setItem('selectedDestination', JSON.stringify(destination));
-    window.location.href = 'Dist_Detail.html';
+    openItemDetail(destinationsData.find(d => d.id === id), 'selectedDestination', 'Dist_Detail.html');
 }
 
-function loadDestinationDetail() {
-    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
-    if (!dest) {
-        window.location.href = 'Dist_Search.html';
-        return;
-    }
-
-    document.getElementById('detailDestName').textContent = dest.name;
-    document.getElementById('detailDestLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${dest.location}`;
-    document.getElementById('detailDestPrice').textContent = `$${dest.price}`;
-    document.getElementById('detailDestRating').innerHTML = `<i class="fas fa-star"></i> ${dest.rating}`;
-    document.getElementById('detailDestCategory').textContent = dest.category.charAt(0).toUpperCase() + dest.category.slice(1);
-    document.getElementById('detailDestCountry').textContent = dest.country.charAt(0).toUpperCase() + dest.country.slice(1);
-    document.getElementById('detailDestWeather').innerHTML = `<i class="fas fa-sun"></i> ${dest.weather.temp}°C - ${dest.weather.condition}`;
-    document.getElementById('detailDestDescription').textContent = dest.description;
-
-    // Set main image
-    document.getElementById('detailMainImage').src = dest.images[0];
-    document.getElementById('detailMainImage').alt = dest.name;
-
-    // Add thumbnails
-    const thumbContainer = document.getElementById('detailThumbnailContainer');
-    thumbContainer.innerHTML = '';
-    dest.images.forEach((img, index) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'thumbnail';
-        thumb.innerHTML = `<img src="${img}" alt="Destination image ${index + 1}">`;
-        thumb.onclick = () => {
-            document.getElementById('detailMainImage').src = img;
-        };
-        thumbContainer.appendChild(thumb);
-    });
-
-    // Events
-    const eventsList = document.getElementById('detailEventsList');
-    eventsList.innerHTML = '';
-    dest.events.forEach(event => {
-        eventsList.innerHTML += `
-            <div class="event-item">
-                <span class="event-name"><i class="fas fa-calendar"></i> ${event.name}</span>
-                <span class="event-time">${event.time}</span>
-            </div>
-        `;
-    });
-
-    // Set total price
-    document.getElementById('totalPrice').textContent = `$${dest.price}`;
-    localStorage.setItem('selectedDestinationPrice', dest.price);
-
-    // Load comments
-    loadDestinationDetailComments(dest);
-}
-
-function loadDestinationDetailComments(dest) {
-    const commentsList = document.getElementById('detailComments');
-    commentsList.innerHTML = '';
-
-    if (!dest.comments || dest.comments.length === 0) {
-        commentsList.innerHTML = '<p style="color: #94a3b8;">No reviews yet. Be the first to leave one!</p>';
-        return;
-    }
-
-    dest.comments.forEach(comment => {
-        const commentEl = document.createElement('div');
-        commentEl.className = 'comment';
-        commentEl.innerHTML = `
-            <div class="comment-author"><i class="fas fa-user-circle"></i> ${comment.author}</div>
-            <div class="comment-text">${comment.text}</div>
-        `;
-        commentsList.appendChild(commentEl);
-    });
-}
-
-function bookDestination() {
-    if (!getCurrentUser()) {
-        localStorage.setItem('redirectAfterLogin', 'Dist_Detail.html');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    const date = document.getElementById('bookDate').value;
-    const time = document.getElementById('bookTime').value;
-    const guide = document.getElementById('bookGuide').checked;
-
-if (!date || !time) {
-        showNotification('Please select date and time.', 'error');
-        return;
-    }
-
-    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
-    let total = dest.price;
-    if (guide) total += 50;
-
-    redirectWithNotification(`✅ Booking confirmed for ${dest.name}!`, 'success', 'Dist_Search.html');
-}
-
-function addDestinationComment() {
-    const input = document.getElementById('commentText');
-    const text = input.value.trim();
-
-if (!text) {
-        showNotification('Please write a review.', 'error');
-        return;
-    }
-
-    if (!getCurrentUser()) {
-        showNotification('Please login to leave a review.', 'error');
-        return;
-    }
-
-    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
-    const author = getCurrentUser();
-    
-    if (!dest.comments) {
-        dest.comments = [];
-    }
-    
-    dest.comments.push({ author, text });
-    loadDestinationDetailComments(dest);
-    input.value = '';
-}
-
-function showLoginOverlay() {
-    document.getElementById('loginOverlay').classList.add('active');
-}
-
-function closeLoginOverlay() {
-    document.getElementById('loginOverlay').classList.remove('active');
-}
-
-function setModalImage(src, thumb) {
-    document.getElementById('modalMainImage').src = src;
-
-    const container = document.getElementById('modalThumbnails');
-    const thumbs = container.children;
-
-    for (let i = 0; i < thumbs.length; i++) {
-        thumbs[i].classList.remove('active');
-    }
-
-    thumb.classList.add('active');
-}
-
-
-
-function renderComments() {
-    const list = document.getElementById('modalComments');
-    if (!activeDestination || !list) return;
-
-    list.innerHTML = '';
-
-    for (let i = 0; i < activeDestination.comments.length; i++) {
-        const c = activeDestination.comments[i];
-
-        list.innerHTML += `
-            <div class="comment">
-                <div class="comment-author">${c.author}</div>
-                <div class="comment-text">${c.text}</div>
-            </div>
-        `;
-    }
-}
-
-
-
-
-
-// ============================================================================================================================================================================================
-// ---------- Hotel Search Page Logic ----------
-// ============================================================================================================================================================================================
-
+// ============================================================
+// ---------- Hotel Search Page ----------
+// ============================================================
 const hotelsData = [
     {
         id: 1,
@@ -777,71 +618,38 @@ const hotelsData = [
 
 let currentHotelView = 'grid';
 let currentHotels = [...hotelsData];
-let activeHotel = null;
 
-function renderHotels() {
-    const container = document.getElementById('hotelsContainer');
-    if (!container) return;
-
-    container.className = `destinations-${currentHotelView}`;
-    container.innerHTML = '';
-
-    if (currentHotels.length === 0) {
-        container.innerHTML = '<div class="empty-posts" style="grid-column: 1/-1; text-align: center; padding: 3rem;">No hotels match your filters.</div>';
-        document.getElementById('resultsCount').textContent = '0 hotels found';
-        return;
-    }
-
-    document.getElementById('resultsCount').textContent = `${currentHotels.length} hotel${currentHotels.length !== 1 ? 's' : ''} found`;
-
-    currentHotels.forEach(hotel => {
-        if (currentHotelView === 'grid') {
-            container.innerHTML += `
-                <div class="dest-card" onclick="openHotelDetail(${hotel.id})">
-                    <img class="dest-card-img" src="${hotel.images[0]}" alt="${hotel.name}">
-                    <div class="dest-card-content">
-                        <div class="dest-card-title">${hotel.name}</div>
-                        <div class="dest-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${hotel.location}</span>
-                            <span class="dest-card-rating"><i class="fas fa-star"></i> ${hotel.rating}</span>
-                        </div>
-                        <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                            <span class="dest-card-price">$${hotel.pricePerNight}/night</span>
-                            <span>${hotel.hotelClass}★ Hotel</span>
-                        </div>
-                    </div>
+function hotelCard(h, view) {
+    const desc = view === 'list'
+        ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${h.description.substring(0, 120)}...</p>`
+        : '';
+    return `
+        <div class="dest-card" onclick="openHotelDetail(${h.id})">
+            <img class="dest-card-img" src="${h.images[0]}" alt="${h.name}">
+            <div class="dest-card-content">
+                <div class="dest-card-title">${h.name}</div>
+                <div class="dest-card-meta">
+                    <span><i class="fas fa-map-marker-alt"></i> ${h.location}</span>
+                    <span class="dest-card-rating"><i class="fas fa-star"></i> ${h.rating}</span>
                 </div>
-            `;
-        } else if (currentHotelView === 'list') {
-            container.innerHTML += `
-                <div class="dest-card" onclick="openHotelDetail(${hotel.id})">
-                    <img class="dest-card-img" src="${hotel.images[0]}" alt="${hotel.name}">
-                    <div class="dest-card-content">
-                        <div class="dest-card-title">${hotel.name}</div>
-                        <div class="dest-card-meta">
-                            <span><i class="fas fa-map-marker-alt"></i> ${hotel.location}</span>
-                            <span class="dest-card-rating"><i class="fas fa-star"></i> ${hotel.rating}</span>
-                        </div>
-                        <p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${hotel.description.substring(0, 120)}...</p>
-                        <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                            <span class="dest-card-price">$${hotel.pricePerNight}/night</span>
-                            <span>${hotel.hotelClass}★ Hotel</span>
-                        </div>
-                    </div>
+                ${desc}
+                <div class="dest-card-meta" style="margin-top: 0.5rem;">
+                    <span class="dest-card-price">$${h.pricePerNight}/night</span>
+                    <span>${h.hotelClass}★ Hotel</span>
                 </div>
-            `;
-        }
-    });
+            </div>
+        </div>`;
 }
 
-function switchView(view) {
-    if (document.getElementById('hotelsContainer')) {
-        currentHotelView = view;
-        renderHotels();
-    } else {
-        currentView = view;
-        renderDestinations();
-    }
+function renderHotels() {
+    renderItems({
+        containerId: 'hotelsContainer',
+        items: currentHotels,
+        view: currentHotelView,
+        label: 'hotel',
+        cardBuilder: hotelCard,
+        useGridList: true
+    });
 }
 
 function applyHotelFilters() {
@@ -849,14 +657,12 @@ function applyHotelFilters() {
     const minRating = parseFloat(document.getElementById('ratingFilter')?.value || 0);
     const location = document.getElementById('locationFilter')?.value || 'all';
     const hotelClass = document.getElementById('classFilter')?.value || 'all';
-
     const checkedAmenities = Array.from(
         document.querySelectorAll('.amenity-checkboxes input:checked')
     ).map(el => el.value.toLowerCase());
 
     currentHotels = hotelsData.filter(hotel => {
-        const matchesSearch = hotel.name.toLowerCase().includes(search) ||
-                              hotel.location.toLowerCase().includes(search);
+        const matchesSearch = hotel.name.toLowerCase().includes(search) || hotel.location.toLowerCase().includes(search);
         const matchesRating = hotel.rating >= minRating;
         const matchesLocation = location === 'all' || hotel.country === location;
         const matchesClass = hotelClass === 'all' || hotel.hotelClass === hotelClass;
@@ -869,6 +675,7 @@ function applyHotelFilters() {
     renderHotels();
 }
 
+// Shared by both Dist_Search and Hotel_Search pages (they use the same DOM ids).
 function clearFilters() {
     document.getElementById('searchInput').value = '';
     document.getElementById('ratingFilter').value = '0';
@@ -886,392 +693,66 @@ function clearFilters() {
 }
 
 function openHotelDetail(id) {
-    const hotel = hotelsData.find(h => h.id === id);
-    if (!hotel) return;
-    
-    // Store hotel data in localStorage for the detail page
-    localStorage.setItem('selectedHotel', JSON.stringify(hotel));
-    window.location.href = 'Hotel_Detail.html';
+    openItemDetail(hotelsData.find(h => h.id === id), 'selectedHotel', 'Hotel_Detail.html');
 }
 
-// ============================================================================================================================================================================================
-// ---------- Hotel Detail Page Logic ----------
-// ============================================================================================================================================================================================
-
-function loadHotelDetail() {
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
-    if (!hotel) {
-        window.location.href = 'Hotel_Search.html';
-        return;
-    }
-
-    document.getElementById('detailHotelName').textContent = hotel.name;
-    document.getElementById('detailHotelClass').textContent = `${hotel.hotelClass}★ Hotel`;
-    document.getElementById('detailHotelPrice').textContent = `$${hotel.pricePerNight}`;
-    document.getElementById('detailHotelLocation').textContent = hotel.location;
-    document.getElementById('detailHotelRating').innerHTML = `<i class="fas fa-star"></i> ${hotel.rating}`;
-    document.getElementById('detailCheckIn').textContent = hotel.checkIn;
-    document.getElementById('detailCheckOut').textContent = hotel.checkOut;
-    document.getElementById('detailHotelDescription').textContent = hotel.description;
-
-    // Set main image
-    document.getElementById('detailMainImage').src = hotel.images[0];
-    document.getElementById('detailMainImage').alt = hotel.name;
-
-    // Add thumbnails
-    const thumbContainer = document.getElementById('detailThumbnailContainer');
-    thumbContainer.innerHTML = '';
-    hotel.images.forEach((img, index) => {
-        const thumb = document.createElement('div');
-        thumb.className = 'thumbnail';
-        thumb.innerHTML = `<img src="${img}" alt="Hotel image ${index + 1}">`;
-        thumb.onclick = () => {
-            document.getElementById('detailMainImage').src = img;
-        };
-        thumbContainer.appendChild(thumb);
-    });
-
-    // Amenities
-    document.getElementById('detailAmenitiesList').innerHTML = hotel.amenities.map(a =>
-        `<span class="amenity-tag"><i class="fas fa-check"></i> ${a}</span>`
-    ).join('');
-
-    // Weather
-    document.getElementById('detailWeather').innerHTML = `
-        <div><span style="font-size: 1.5rem; font-weight: bold; color: #1e6f5c;">${hotel.weather.temp}°C</span></div>
-        <div><i class="fas fa-sun" style="color: #f59e0b; font-size: 1.5rem;"></i> ${hotel.weather.condition}</div>
-    `;
-
-    // Set total price
-    document.getElementById('totalPrice').textContent = `$${hotel.pricePerNight}`;
-    localStorage.setItem('selectedHotelPrice', hotel.pricePerNight);
-
-    // Load comments
-    loadHotelDetailComments(hotel);
-}
-
-function loadHotelDetailComments(hotel) {
-    const commentsList = document.getElementById('detailComments');
-    commentsList.innerHTML = '';
-
-    if (!hotel.comments || hotel.comments.length === 0) {
-        commentsList.innerHTML = '<p style="color: #94a3b8;">No reviews yet. Be the first to leave one!</p>';
-        return;
-    }
-
-    hotel.comments.forEach(comment => {
-        const commentEl = document.createElement('div');
-        commentEl.className = 'comment';
-        commentEl.innerHTML = `
-            <div class="comment-author"><i class="fas fa-user-circle"></i> ${comment.author}</div>
-            <div class="comment-text">${comment.text}</div>
-        `;
-        commentsList.appendChild(commentEl);
-    });
-}
-
-function bookHotel() {
-    if (!getCurrentUser()) {
-        localStorage.setItem('redirectAfterLogin', 'Hotel_Detail.html');
-        window.location.href = 'login.html';
-        return;
-    }
-
-    const checkIn = document.getElementById('checkInDate').value;
-    const checkOut = document.getElementById('checkOutDate').value;
-    const guests = document.getElementById('guestCount').value;
-    const roomType = document.getElementById('roomType').value;
-    const breakfast = document.getElementById('breakfast').checked;
-    const transfer = document.getElementById('transfer').checked;
-
-    if (!checkIn || !checkOut) {
-showNotification('Please select check-in and check-out dates.', 'error');
-        return;
-    }
-
-    if (new Date(checkOut) <= new Date(checkIn)) {
-        showNotification('Check-out date must be after check-in date.', 'error');
-        return;
-    }
-
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
-    const nights = Math.ceil((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
-    let total = hotel.pricePerNight * nights;
-    if (breakfast) total += 20 * nights;
-    if (transfer) total += 30;
-
-    redirectWithNotification(`✅ Booking confirmed for ${hotel.name}!`, 'success', 'Hotel_Search.html');
-}
-
-function addHotelComment() {
-    const input = document.getElementById('commentText');
-    const text = input.value.trim();
-
-if (!text) {
-        showNotification('Please write a review.', 'error');
-        return;
-    }
-
-    if (!getCurrentUser()) {
-        showNotification('Please login to leave a review.', 'error');
-        return;
-    }
-
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
-    const author = getCurrentUser();
-    
-    if (!hotel.comments) {
-        hotel.comments = [];
-    }
-    
-    hotel.comments.push({ author, text });
-    loadHotelDetailComments(hotel);
-    input.value = '';
-}
-
-function showLoginOverlay() {
-    document.getElementById('loginOverlay').classList.add('active');
-}
-
-function closeLoginOverlay() {
-    document.getElementById('loginOverlay').classList.remove('active');
-}
-
-function renderHotelComments() {
-    const list = document.getElementById('modalComments');
-    if (!activeHotel || !list) return;
-
-    list.innerHTML = '';
-    for (let i = 0; i < activeHotel.comments.length; i++) {
-        const c = activeHotel.comments[i];
-        list.innerHTML += `
-            <div class="comment">
-                <div class="comment-author">${c.author}</div>
-                <div class="comment-text">${c.text}</div>
-            </div>
-        `;
-    }
-}
-
-function addComment() {
-    const input = document.getElementById('commentText');
-    const text = input.value.trim();
-
-    if (document.getElementById('hotelsContainer')) {
-        if (!text || !activeHotel) return;
-        const author = getCurrentUser() || 'Guest';
-        activeHotel.comments.push({ author, text });
-        renderHotelComments();
-    } else {
-        if (!text || !activeDestination) return;
-        const author = getCurrentUser() || 'Guest';
-        activeDestination.comments.push({ author, text });
-        renderComments();
-    }
-    input.value = '';
-}
-
-function submitBooking(e) {
-    e.preventDefault();
-    if (!getCurrentUser()) {
-        showNotification('Please login first to make a booking.', 'error');
-        return;
-    }
-
-    if (document.getElementById('hotelsContainer')) {
-        const checkIn = document.getElementById('checkInDate').value;
-        const checkOut = document.getElementById('checkOutDate').value;
-        const guests = document.getElementById('guestsCount').value;
-        const roomType = document.getElementById('roomType').value;
-        const transfer = document.getElementById('airportTransfer').checked;
-        const breakfast = document.getElementById('breakfastIncluded').checked;
-
-        if (!checkIn || !checkOut) {
-            showNotification('Please select check-in and check-out dates.', 'error');
-            return;
-        }
-        if (new Date(checkOut) <= new Date(checkIn)) {
-            showNotification('Check-out date must be after check-in.', 'error');
-            return;
-        }
-
-        const nights = Math.round((new Date(checkOut) - new Date(checkIn)) / (1000 * 60 * 60 * 24));
-        let total = activeHotel.pricePerNight * nights;
-        if (transfer) total += 30;
-        if (breakfast) total += 20 * nights;
-
-        showNotification(`✅ Booking confirmed for ${activeHotel?.name}!`, 'success');
-        document.getElementById('bookingForm').reset();
-    } else {
-        const date = document.getElementById('bookDate').value;
-        const time = document.getElementById('bookTime').value;
-        const guide = document.getElementById('bookGuide').checked;
-        if (!date || !time) {
-            showNotification('Please select date and time.', 'error');
-            return;
-        }
-        showNotification(`✅ Booking confirmed for ${activeDestination?.name}!`, 'success');
-        document.getElementById('bookingForm').reset();
-    }
-}
-
-function closeDetail() {
-    document.getElementById('detailModal').classList.remove('active');
-    document.body.style.overflow = '';
-    activeHotel = null;
-    activeDestination = null;
-}
-
-// ============================================================================================================================================================================================
-// ---------- Flight Search Page Logic ----------
-// ============================================================================================================================================================================================
-
+// ============================================================
+// ---------- Flight Search Page ----------
+// ============================================================
 const flightsData = [
-    {
-        id: 1,
-        airline: "EgyptAir",
-        flightNumber: "MS 123",
-        from: "Cairo (CAI)",
-        to: "Paris (CDG)",
-        departureTime: "10:00",
-        arrivalTime: "14:30",
-        duration: "5h 30m",
-        stops: 0,
-        price: 450,
-        aircraft: "Boeing 737",
-        baggage: "23kg included",
-        class: "Economy",
-        date: "2024-05-15"
-    },
-    {
-        id: 2,
-        airline: "Air France",
-        flightNumber: "AF 456",
-        from: "Paris (CDG)",
-        to: "Tokyo (NRT)",
-        departureTime: "18:45",
-        arrivalTime: "14:20",
-        duration: "12h 35m",
-        stops: 1,
-        price: 850,
-        aircraft: "Airbus A380",
-        baggage: "23kg included",
-        class: "Business",
-        date: "2024-05-16"
-    },
-    {
-        id: 3,
-        airline: "Emirates",
-        flightNumber: "EK 789",
-        from: "Dubai (DXB)",
-        to: "New York (JFK)",
-        departureTime: "02:30",
-        arrivalTime: "08:45",
-        duration: "14h 15m",
-        stops: 0,
-        price: 1200,
-        aircraft: "Boeing 777",
-        baggage: "30kg included",
-        class: "First",
-        date: "2024-05-17"
-    },
-    {
-        id: 4,
-        airline: "Lufthansa",
-        flightNumber: "LH 321",
-        from: "Frankfurt (FRA)",
-        to: "Cairo (CAI)",
-        departureTime: "22:15",
-        arrivalTime: "02:40",
-        duration: "4h 25m",
-        stops: 0,
-        price: 320,
-        aircraft: "Airbus A320",
-        baggage: "20kg included",
-        class: "Economy",
-        date: "2024-05-18"
-    },
-    {
-        id: 5,
-        airline: "British Airways",
-        flightNumber: "BA 654",
-        from: "London (LHR)",
-        to: "Rome (FCO)",
-        departureTime: "09:30",
-        arrivalTime: "12:45",
-        duration: "2h 15m",
-        stops: 0,
-        price: 180,
-        aircraft: "Boeing 787",
-        baggage: "23kg included",
-        class: "Premium Economy",
-        date: "2024-05-19"
-    },
-    {
-        id: 6,
-        airline: "Qatar Airways",
-        flightNumber: "QR 987",
-        from: "Doha (DOH)",
-        to: "Sydney (SYD)",
-        departureTime: "20:00",
-        arrivalTime: "18:30",
-        duration: "15h 30m",
-        stops: 0,
-        price: 1400,
-        aircraft: "Boeing 787",
-        baggage: "30kg included",
-        class: "Business",
-        date: "2024-05-20"
-    }
+    { id: 1, airline: "EgyptAir",        flightNumber: "MS 123", from: "Cairo (CAI)",     to: "Paris (CDG)",    departureTime: "10:00", arrivalTime: "14:30", duration: "5h 30m",  stops: 0, price: 450,  aircraft: "Boeing 737",  baggage: "23kg included", class: "Economy",          date: "2024-05-15" },
+    { id: 2, airline: "Air France",      flightNumber: "AF 456", from: "Paris (CDG)",     to: "Tokyo (NRT)",    departureTime: "18:45", arrivalTime: "14:20", duration: "12h 35m", stops: 1, price: 850,  aircraft: "Airbus A380", baggage: "23kg included", class: "Business",         date: "2024-05-16" },
+    { id: 3, airline: "Emirates",        flightNumber: "EK 789", from: "Dubai (DXB)",     to: "New York (JFK)", departureTime: "02:30", arrivalTime: "08:45", duration: "14h 15m", stops: 0, price: 1200, aircraft: "Boeing 777",  baggage: "30kg included", class: "First",            date: "2024-05-17" },
+    { id: 4, airline: "Lufthansa",       flightNumber: "LH 321", from: "Frankfurt (FRA)", to: "Cairo (CAI)",    departureTime: "22:15", arrivalTime: "02:40", duration: "4h 25m",  stops: 0, price: 320,  aircraft: "Airbus A320", baggage: "20kg included", class: "Economy",          date: "2024-05-18" },
+    { id: 5, airline: "British Airways", flightNumber: "BA 654", from: "London (LHR)",    to: "Rome (FCO)",     departureTime: "09:30", arrivalTime: "12:45", duration: "2h 15m",  stops: 0, price: 180,  aircraft: "Boeing 787",  baggage: "23kg included", class: "Premium Economy",  date: "2024-05-19" },
+    { id: 6, airline: "Qatar Airways",   flightNumber: "QR 987", from: "Doha (DOH)",      to: "Sydney (SYD)",   departureTime: "20:00", arrivalTime: "18:30", duration: "15h 30m", stops: 0, price: 1400, aircraft: "Boeing 787",  baggage: "30kg included", class: "Business",         date: "2024-05-20" }
 ];
 
 let currentFlights = [...flightsData];
 
-function renderFlights() {
-    const container = document.getElementById('flightsContainer');
-    if (!container) return;
-
-    container.innerHTML = '';
-
-    if (currentFlights.length === 0) {
-        container.innerHTML = '<div class="empty-posts" style="text-align: center; padding: 3rem;">No flights match your search.</div>';
-        document.getElementById('resultsCount').textContent = '0 flights found';
-        return;
-    }
-
-    document.getElementById('resultsCount').textContent = `${currentFlights.length} flight${currentFlights.length !== 1 ? 's' : ''} found`;
-
-    currentFlights.forEach(flight => {
-        container.innerHTML += `
-            <div class="flight-card" onclick="openFlightDetail(${flight.id})">
-                <div class="flight-header">
-                    <div class="airline-info">
-                        <span class="airline-name">${flight.airline}</span>
-                        <span class="flight-number">${flight.flightNumber}</span>
-                    </div>
-                    <div class="flight-price">$${flight.price}</div>
+function flightCard(flight) {
+    const stopsLabel = flight.stops === 0
+        ? 'Direct'
+        : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`;
+    return `
+        <div class="flight-card" onclick="openFlightDetail(${flight.id})">
+            <div class="flight-header">
+                <div class="airline-info">
+                    <span class="airline-name">${flight.airline}</span>
+                    <span class="flight-number">${flight.flightNumber}</span>
                 </div>
-                <div class="flight-route">
-                    <div class="departure">
-                        <div class="time">${flight.departureTime}</div>
-                        <div class="city">${flight.from}</div>
-                    </div>
-                    <div class="flight-duration">
-                        <div class="duration">${flight.duration}</div>
-                        <div class="stops">${flight.stops === 0 ? 'Direct' : flight.stops + ' stop' + (flight.stops > 1 ? 's' : '')}</div>
-                    </div>
-                    <div class="arrival">
-                        <div class="time">${flight.arrivalTime}</div>
-                        <div class="city">${flight.to}</div>
-                    </div>
+                <div class="flight-price">$${flight.price}</div>
+            </div>
+            <div class="flight-route">
+                <div class="departure">
+                    <div class="time">${flight.departureTime}</div>
+                    <div class="city">${flight.from}</div>
                 </div>
-                <div class="flight-details">
-                    <span class="aircraft">${flight.aircraft}</span>
-                    <span class="class">${flight.class}</span>
-                    <span class="baggage">${flight.baggage}</span>
+                <div class="flight-duration">
+                    <div class="duration">${flight.duration}</div>
+                    <div class="stops">${stopsLabel}</div>
+                </div>
+                <div class="arrival">
+                    <div class="time">${flight.arrivalTime}</div>
+                    <div class="city">${flight.to}</div>
                 </div>
             </div>
-        `;
+            <div class="flight-details">
+                <span class="aircraft">${flight.aircraft}</span>
+                <span class="class">${flight.class}</span>
+                <span class="baggage">${flight.baggage}</span>
+            </div>
+        </div>`;
+}
+
+function renderFlights() {
+    renderItems({
+        containerId: 'flightsContainer',
+        items: currentFlights,
+        view: null,
+        label: 'flight',
+        cardBuilder: flightCard,
+        useGridList: false
     });
 }
 
@@ -1280,12 +761,11 @@ function searchFlights() {
     const to = document.getElementById('toInput')?.value.toLowerCase() || '';
     const date = document.getElementById('dateInput')?.value || '';
 
-    currentFlights = flightsData.filter(flight => {
-        const matchesFrom = flight.from.toLowerCase().includes(from);
-        const matchesTo = flight.to.toLowerCase().includes(to);
-        const matchesDate = !date || flight.date === date;
-        return matchesFrom && matchesTo && matchesDate;
-    });
+    currentFlights = flightsData.filter(flight =>
+        flight.from.toLowerCase().includes(from) &&
+        flight.to.toLowerCase().includes(to) &&
+        (!date || flight.date === date)
+    );
 
     renderFlights();
 }
@@ -1303,14 +783,13 @@ function applyFlightFilters() {
         const matchesClass = flightClass === 'all' || flight.class.toLowerCase().replace(' ', '') === flightClass;
         const matchesPrice = flight.price <= maxPrice;
 
-        // Departure time filter (simplified)
         let matchesTime = true;
         if (departureTime !== 'all') {
             const hour = parseInt(flight.departureTime.split(':')[0]);
-            if (departureTime === 'morning' && !(hour >= 6 && hour < 12)) matchesTime = false;
+            if (departureTime === 'morning'   && !(hour >= 6  && hour < 12)) matchesTime = false;
             if (departureTime === 'afternoon' && !(hour >= 12 && hour < 18)) matchesTime = false;
-            if (departureTime === 'evening' && !(hour >= 18 && hour < 24)) matchesTime = false;
-            if (departureTime === 'night' && !(hour >= 0 && hour < 6)) matchesTime = false;
+            if (departureTime === 'evening'   && !(hour >= 18 && hour < 24)) matchesTime = false;
+            if (departureTime === 'night'     && !(hour >= 0  && hour < 6))  matchesTime = false;
         }
 
         return matchesAirline && matchesStops && matchesClass && matchesPrice && matchesTime;
@@ -1337,18 +816,184 @@ function updatePriceRange(value) {
 }
 
 function openFlightDetail(id) {
-    const flight = flightsData.find(f => f.id === id);
-    if (!flight) return;
-
-    // Store flight data in localStorage for the detail page
-    localStorage.setItem('selectedFlight', JSON.stringify(flight));
-    window.location.href = 'Flight_Detail.html';
+    openItemDetail(flightsData.find(f => f.id === id), 'selectedFlight', 'Flight_Detail.html');
 }
 
-// ============================================================================================================================================================================================
-// ---------- Flight Detail Page Logic ----------
-// ============================================================================================================================================================================================
+// ============================================================
+// ---------- Detail page helpers (shared) ----------
+// ============================================================
 
+// Render the comments list for a detail page (destination or hotel).
+function renderDetailComments(item) {
+    const list = document.getElementById('detailComments');
+    if (!list) return;
+
+    if (!item.comments || item.comments.length === 0) {
+        list.innerHTML = '<p style="color: #94a3b8;">No reviews yet. Be the first to leave one!</p>';
+        return;
+    }
+
+    list.innerHTML = item.comments.map(c => `
+        <div class="comment">
+            <div class="comment-author"><i class="fas fa-user-circle"></i> ${c.author}</div>
+            <div class="comment-text">${c.text}</div>
+        </div>
+    `).join('');
+}
+
+// Add a comment to whichever item is currently being viewed.
+function addDetailComment(storageKey) {
+    const input = document.getElementById('commentText');
+    const text = input.value.trim();
+
+    if (!text) {
+        showNotification('Please write a review.', 'error');
+        return;
+    }
+    if (!getCurrentUser()) {
+        showNotification('Please login to leave a review.', 'error');
+        return;
+    }
+
+    const item = JSON.parse(localStorage.getItem(storageKey));
+    if (!item.comments) item.comments = [];
+    item.comments.push({ author: getCurrentUser(), text });
+    renderDetailComments(item);
+    input.value = '';
+}
+
+function addDestinationComment() { addDetailComment('selectedDestination'); }
+function addHotelComment()       { addDetailComment('selectedHotel'); }
+
+// ============================================================
+// ---------- Destination Detail page ----------
+// ============================================================
+function loadDestinationDetail() {
+    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
+    if (!dest) {
+        window.location.href = 'Dist_Search.html';
+        return;
+    }
+
+    document.getElementById('detailDestName').textContent = dest.name;
+    document.getElementById('detailDestLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${dest.location}`;
+    document.getElementById('detailDestPrice').textContent = `$${dest.price}`;
+    document.getElementById('detailDestRating').innerHTML = `<i class="fas fa-star"></i> ${dest.rating}`;
+    document.getElementById('detailDestCategory').textContent = dest.category.charAt(0).toUpperCase() + dest.category.slice(1);
+    document.getElementById('detailDestCountry').textContent = dest.country.charAt(0).toUpperCase() + dest.country.slice(1);
+    document.getElementById('detailDestWeather').innerHTML = `<i class="fas fa-sun"></i> ${dest.weather.temp}°C - ${dest.weather.condition}`;
+    document.getElementById('detailDestDescription').textContent = dest.description;
+
+    document.getElementById('detailMainImage').src = dest.images[0];
+    document.getElementById('detailMainImage').alt = dest.name;
+
+    const thumbContainer = document.getElementById('detailThumbnailContainer');
+    thumbContainer.innerHTML = '';
+    dest.images.forEach((img, index) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumbnail';
+        thumb.innerHTML = `<img src="${img}" alt="Destination image ${index + 1}">`;
+        thumb.onclick = () => { document.getElementById('detailMainImage').src = img; };
+        thumbContainer.appendChild(thumb);
+    });
+
+    const eventsList = document.getElementById('detailEventsList');
+    eventsList.innerHTML = dest.events.map(event => `
+        <div class="event-item">
+            <span class="event-name"><i class="fas fa-calendar"></i> ${event.name}</span>
+            <span class="event-time">${event.time}</span>
+        </div>
+    `).join('');
+
+    document.getElementById('totalPrice').textContent = `$${dest.price}`;
+    localStorage.setItem('selectedDestinationPrice', dest.price);
+
+    renderDetailComments(dest);
+}
+
+function bookDestination() {
+    if (!requireLogin('Dist_Detail.html')) return;
+
+    const date = document.getElementById('bookDate').value;
+    const time = document.getElementById('bookTime').value;
+    if (!date || !time) {
+        showNotification('Please select date and time.', 'error');
+        return;
+    }
+
+    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
+    redirectWithNotification(`✅ Booking confirmed for ${dest.name}!`, 'success', 'Dist_Search.html');
+}
+
+// ============================================================
+// ---------- Hotel Detail page ----------
+// ============================================================
+function loadHotelDetail() {
+    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    if (!hotel) {
+        window.location.href = 'Hotel_Search.html';
+        return;
+    }
+
+    document.getElementById('detailHotelName').textContent = hotel.name;
+    document.getElementById('detailHotelClass').textContent = `${hotel.hotelClass}★ Hotel`;
+    document.getElementById('detailHotelPrice').textContent = `$${hotel.pricePerNight}`;
+    document.getElementById('detailHotelLocation').textContent = hotel.location;
+    document.getElementById('detailHotelRating').innerHTML = `<i class="fas fa-star"></i> ${hotel.rating}`;
+    document.getElementById('detailCheckIn').textContent = hotel.checkIn;
+    document.getElementById('detailCheckOut').textContent = hotel.checkOut;
+    document.getElementById('detailHotelDescription').textContent = hotel.description;
+
+    document.getElementById('detailMainImage').src = hotel.images[0];
+    document.getElementById('detailMainImage').alt = hotel.name;
+
+    const thumbContainer = document.getElementById('detailThumbnailContainer');
+    thumbContainer.innerHTML = '';
+    hotel.images.forEach((img, index) => {
+        const thumb = document.createElement('div');
+        thumb.className = 'thumbnail';
+        thumb.innerHTML = `<img src="${img}" alt="Hotel image ${index + 1}">`;
+        thumb.onclick = () => { document.getElementById('detailMainImage').src = img; };
+        thumbContainer.appendChild(thumb);
+    });
+
+    document.getElementById('detailAmenitiesList').innerHTML = hotel.amenities
+        .map(a => `<span class="amenity-tag"><i class="fas fa-check"></i> ${a}</span>`)
+        .join('');
+
+    document.getElementById('detailWeather').innerHTML = `
+        <div><span style="font-size: 1.5rem; font-weight: bold; color: #1e6f5c;">${hotel.weather.temp}°C</span></div>
+        <div><i class="fas fa-sun" style="color: #f59e0b; font-size: 1.5rem;"></i> ${hotel.weather.condition}</div>
+    `;
+
+    document.getElementById('totalPrice').textContent = `$${hotel.pricePerNight}`;
+    localStorage.setItem('selectedHotelPrice', hotel.pricePerNight);
+
+    renderDetailComments(hotel);
+}
+
+function bookHotel() {
+    if (!requireLogin('Hotel_Detail.html')) return;
+
+    const checkIn = document.getElementById('checkInDate').value;
+    const checkOut = document.getElementById('checkOutDate').value;
+
+    if (!checkIn || !checkOut) {
+        showNotification('Please select check-in and check-out dates.', 'error');
+        return;
+    }
+    if (new Date(checkOut) <= new Date(checkIn)) {
+        showNotification('Check-out date must be after check-in date.', 'error');
+        return;
+    }
+
+    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    redirectWithNotification(`✅ Booking confirmed for ${hotel.name}!`, 'success', 'Hotel_Search.html');
+}
+
+// ============================================================
+// ---------- Flight Detail page ----------
+// ============================================================
 function loadFlightDetail() {
     const flight = JSON.parse(localStorage.getItem('selectedFlight'));
     if (!flight) {
@@ -1364,58 +1009,69 @@ function loadFlightDetail() {
     document.getElementById('detailArrivalTime').textContent = flight.arrivalTime;
     document.getElementById('detailDuration').textContent = flight.duration;
     document.getElementById('detailTotalDuration').textContent = flight.duration;
-    document.getElementById('detailStops').textContent = flight.stops === 0 ? 'Direct' : flight.stops + ' stop' + (flight.stops > 1 ? 's' : '');
+    document.getElementById('detailStops').textContent = flight.stops === 0
+        ? 'Direct'
+        : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`;
     document.getElementById('detailBaggage').textContent = flight.baggage;
     document.getElementById('detailAircraft').textContent = flight.aircraft;
     document.getElementById('detailAircraftType').textContent = flight.aircraft;
     document.getElementById('detailMeals').textContent = 'Complimentary meals included';
     document.getElementById('detailDepartureDate').textContent = flight.date;
     document.getElementById('detailArrivalDate').textContent = flight.date;
-    
-    // Set total price and store flight for booking
+
     document.getElementById('totalPrice').textContent = `$${flight.price}`;
     localStorage.setItem('selectedFlightPrice', flight.price);
 }
 
 function bookFlight() {
-    if (!getCurrentUser()) {
-        localStorage.setItem('redirectAfterLogin', 'Flight_Detail.html');
-        window.location.href = 'login.html';
-        return;
-    }
-    
-    const adults = document.getElementById('adultCount').value;
-    const children = document.getElementById('childCount').value;
-    const totalPassengers = parseInt(adults) + parseInt(children);
-    if (totalPassengers < 1) {
+    if (!requireLogin('Flight_Detail.html')) return;
+
+    const adults = parseInt(document.getElementById('adultCount').value);
+    const children = parseInt(document.getElementById('childCount').value);
+    if (adults + children < 1) {
         showNotification('Please choose at least one passenger.', 'error');
         return;
     }
 
     const flight = JSON.parse(localStorage.getItem('selectedFlight'));
-    const totalPrice = flight.price * totalPassengers;
-    
     redirectWithNotification(`Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success', 'Flight_Search.html');
 }
 
-function showLoginOverlay() {
-    document.getElementById('loginOverlay').classList.add('active');
+// ============================================================
+// ---------- Dist_Search modal (legacy, kept for HTML compat) ----------
+// The Dist_Search.html page still contains an unused modal. These
+// stubs keep onclick handlers from erroring if it's ever opened.
+// ============================================================
+function closeDetail() {
+    const modal = document.getElementById('detailModal');
+    if (modal) modal.classList.remove('active');
+    document.body.style.overflow = '';
 }
 
-function closeLoginOverlay() {
-    document.getElementById('loginOverlay').classList.remove('active');
+function submitBooking(e) {
+    e.preventDefault();
+    if (!getCurrentUser()) {
+        showNotification('Please login first to make a booking.', 'error');
+        return;
+    }
+    showNotification('Booking submitted!', 'success');
+    document.getElementById('bookingForm').reset();
 }
 
+function addComment() {
+    addDetailComment('selectedDestination');
+}
+
+// ============================================================
 // ---------- Initialize page-specific logic ----------
+// ============================================================
 document.addEventListener('DOMContentLoaded', () => {
     updateNavbar();
 
-    // index page
     if (document.getElementById('postsContainer')) {
         loadPostsToHome();
     }
 
-    // profile page
     if (document.getElementById('addPostBtn')) {
         if (!getCurrentUser()) {
             window.location.href = "login.html";
@@ -1424,12 +1080,9 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('addPostBtn').addEventListener('click', addNewPost);
     }
 
-    // login page
     if (document.getElementById('loginForm')) {
         document.getElementById('loginForm').addEventListener('submit', handleLogin);
     }
-
-    // register page
     if (document.getElementById('registerForm')) {
         document.getElementById('registerForm').addEventListener('submit', handleRegister);
     }
@@ -1437,11 +1090,9 @@ document.addEventListener('DOMContentLoaded', () => {
     // Destination Search page
     if (document.getElementById('destinationsContainer')) {
         renderDestinations();
-
         document.getElementById('searchInput')?.addEventListener('input', applyFilters);
         document.getElementById('ratingFilter')?.addEventListener('change', applyFilters);
         document.getElementById('locationFilter')?.addEventListener('change', applyFilters);
-
         document.getElementById('detailModal')?.addEventListener('click', (e) => {
             if (e.target.id === 'detailModal') closeDetail();
         });
@@ -1450,7 +1101,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Hotel Search page
     if (document.getElementById('hotelsContainer')) {
         renderHotels();
-
         document.getElementById('searchInput')?.addEventListener('input', applyHotelFilters);
         document.getElementById('ratingFilter')?.addEventListener('change', applyHotelFilters);
         document.getElementById('locationFilter')?.addEventListener('change', applyHotelFilters);
@@ -1465,19 +1115,8 @@ document.addEventListener('DOMContentLoaded', () => {
         renderFlights();
     }
 
-    // Flight Detail page
-    if (document.getElementById('detailAirlineName')) {
-        loadFlightDetail();
-    }
-
-// Hotel Detail page
-    if (document.getElementById('detailHotelName')) {
-        loadHotelDetail();
-    }
-
-    // Destination Detail page
-    if (document.getElementById('detailDestName')) {
-        loadDestinationDetail();
-    }
+    // Detail pages
+    if (document.getElementById('detailAirlineName'))  loadFlightDetail();
+    if (document.getElementById('detailHotelName'))    loadHotelDetail();
+    if (document.getElementById('detailDestName'))     loadDestinationDetail();
 });
-

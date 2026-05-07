@@ -1,27 +1,21 @@
-/* Destination Detail Page Styles */
+/* Dist_Detail.css - Destination Detail page-specific styles
+   (shared chrome lives in style.css) */
 
+/* dist uses a wider layout than hotel/flight */
 .detail-page-container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 2rem;
     padding-top: 1rem;
 }
-
 .back-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.5rem;
-    color: #1e6f5c;
-    text-decoration: none;
-    font-weight: 600;
-    margin-bottom: 1.5rem;
     transition: color 0.3s;
 }
-
 .back-btn:hover {
     color: #289671;
 }
 
+/* card wrapper */
 .dest-detail-card {
     background: white;
     border-radius: 16px;
@@ -29,7 +23,7 @@
     overflow: hidden;
 }
 
-/* Header */
+/* header (green gradient banner) */
 .dest-detail-header {
     display: flex;
     justify-content: space-between;
@@ -38,38 +32,32 @@
     background: linear-gradient(135deg, #1e6f5c 0%, #289671 100%);
     color: white;
 }
-
 .dest-name {
     font-size: 2rem;
     font-weight: 700;
     margin-bottom: 0.5rem;
 }
-
 .dest-location {
     font-size: 1rem;
     opacity: 0.9;
 }
-
 .dest-price-display {
     text-align: right;
 }
-
 .dest-price-display .price {
     font-size: 2.5rem;
     font-weight: 700;
 }
-
 .dest-price-display .per-person {
     font-size: 0.9rem;
     opacity: 0.8;
 }
 
-/* Images */
+/* images section */
 .dest-images-section {
     padding: 2rem;
     border-bottom: 1px solid #e2e8f0;
 }
-
 .main-image-container {
     width: 100%;
     height: 400px;
@@ -77,19 +65,16 @@
     overflow: hidden;
     margin-bottom: 1rem;
 }
-
 .main-image-container img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
-
 .thumbnail-container {
     display: flex;
     gap: 0.75rem;
     justify-content: center;
 }
-
 .thumbnail-container .thumbnail {
     width: 80px;
     height: 60px;
@@ -99,24 +84,23 @@
     border: 2px solid transparent;
     transition: border-color 0.3s, transform 0.3s;
 }
-
 .thumbnail-container .thumbnail:hover {
     border-color: #1e6f5c;
     transform: scale(1.05);
 }
-
 .thumbnail-container .thumbnail img {
     width: 100%;
     height: 100%;
     object-fit: cover;
 }
 
-/* Info Section */
+/* info section */
 .dest-info-section {
     padding: 2rem;
 }
 
-.info-section-title {
+/* dist override: section title with icon, no inline-block */
+.dest-info-section .info-section-title {
     color: #1e6f5c;
     margin-bottom: 1.5rem;
     padding-bottom: 0.75rem;
@@ -127,59 +111,39 @@
 }
 
 .info-grid {
-    display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 1.5rem;
-    margin-bottom: 2rem;
 }
-
 .info-box {
-    background: #f8fafc;
     padding: 1.5rem;
-    border-radius: 12px;
-    border: 1px solid #e2e8f0;
 }
-
 .info-box h4 {
-    color: #64748b;
     font-size: 0.85rem;
-    text-transform: uppercase;
     letter-spacing: 0.5px;
-    margin-bottom: 0.5rem;
 }
 
-.info-box p {
-    color: #1e293b;
-    font-size: 1.1rem;
-    font-weight: 600;
-}
-
-/* Description */
-.description-section {
+/* description */
+.dest-info-section .description-section {
     margin-bottom: 2rem;
 }
-
-.description-section h4 {
+.dest-info-section .description-section h4 {
     color: #1e6f5c;
     margin-bottom: 1rem;
 }
-
-.description-section p {
+.dest-info-section .description-section p {
     color: #475569;
     line-height: 1.8;
 }
 
-/* Events Widget */
+/* events */
 .events-widget {
     margin-bottom: 2rem;
 }
-
 .events-list {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
-
 .event-item {
     display: flex;
     justify-content: space-between;
@@ -189,7 +153,6 @@
     border-radius: 12px;
     border: 1px solid #e2e8f0;
 }
-
 .event-name {
     font-weight: 600;
     color: #1e293b;
@@ -197,7 +160,6 @@
     align-items: center;
     gap: 0.5rem;
 }
-
 .event-time {
     color: #64748b;
     background: #e2e8f0;
@@ -206,43 +168,28 @@
     font-size: 0.9rem;
 }
 
-/* Booking Card */
+/* dist booking card uses a different gradient end-color */
 .booking-card {
     background: linear-gradient(135deg, #1e6f5c 0%, #289671 100%);
-    padding: 2rem;
-    border-radius: 16px;
-    color: white;
     margin-bottom: 2rem;
 }
-
-.booking-card h3 {
-    margin-bottom: 1.5rem;
-    display: flex;
-    align-items: center;
-    gap: 0.5rem;
-}
-
 .booking-form-row {
     display: flex;
     gap: 1rem;
     margin-bottom: 1rem;
 }
-
 .booking-form-row .form-group {
     flex: 1;
 }
-
 .booking-card .form-group {
     margin-bottom: 1rem;
 }
-
 .booking-card label {
     display: block;
     margin-bottom: 0.5rem;
     font-size: 0.9rem;
     opacity: 0.9;
 }
-
 .booking-card input[type="date"],
 .booking-card input[type="time"] {
     width: 100%;
@@ -253,212 +200,76 @@
     background: white;
     color: #1e293b;
 }
-
-.checkbox-label {
+.booking-card .checkbox-label {
     display: flex !important;
     align-items: center;
     gap: 0.5rem;
     cursor: pointer;
+    color: white;
 }
-
-.checkbox-label input[type="checkbox"] {
+.booking-card .checkbox-label input[type="checkbox"] {
     width: 20px;
     height: 20px;
     cursor: pointer;
 }
 
-.booking-total {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+/* dist's booking-total has a colored background instead of border-top */
+.booking-card .booking-total {
     margin: 1.5rem 0;
     padding: 1rem;
+    padding-top: 1rem;
     background: rgba(255, 255, 255, 0.15);
     border-radius: 12px;
+    border-top: none;
 }
 
-.total-label {
-    font-size: 1.1rem;
-}
-
-.total-amount {
-    font-size: 2rem;
-    font-weight: 700;
-}
-
-.bookdest-btn {
-    width: 100%;
-    padding: 1rem;
-    background: white;
-    color: #1e6f5c;
-    border: none;
-    border-radius: 12px;
-    font-size: 1.2rem;
-    font-weight: 700;
-    cursor: pointer;
-    transition: transform 0.3s, box-shadow 0.3s;
-}
-
-.bookdest-btn:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
-}
-
-/* Comments Section */
-.comments-section {
-    margin-top: 2rem;
-}
-
+/* dist comments use detail-page-container's wider layout */
 .comments-list {
-    display: flex;
-    flex-direction: column;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
     max-height: 300px;
-    overflow-y: auto;
 }
-
 .comments-list .comment {
     padding: 1rem;
     background: #f8fafc;
     border-radius: 12px;
     border: 1px solid #e2e8f0;
+    border-left: none;
 }
-
 .comment-author {
-    font-weight: 600;
     color: #1e6f5c;
-    margin-bottom: 0.5rem;
     display: flex;
     align-items: center;
     gap: 0.5rem;
 }
-
-.comment-text {
-    color: #475569;
-}
-
-.comment-input {
-    display: flex;
-    gap: 0.75rem;
-}
-
 .comment-input input {
-    flex: 1;
     padding: 0.75rem 1rem;
-    border: 1px solid #e2e8f0;
-    border-radius: 8px;
-    font-size: 1rem;
 }
-
 .comment-input button {
     padding: 0.75rem 1.5rem;
-    background: #1e6f5c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
     transition: background 0.3s;
 }
-
 .comment-input button:hover {
     background: #289671;
 }
 
-/* Login Overlay */
-.login-overlay {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.7);
-    z-index: 1000;
-    justify-content: center;
-    align-items: center;
-}
-
-.login-overlay.active {
-    display: flex;
-}
-
-.login-overlay-content {
-    background: white;
-    padding: 3rem;
-    border-radius: 16px;
-    text-align: center;
-    max-width: 400px;
-}
-
-.login-overlay-content h2 {
-    color: #1e6f5c;
-    margin-bottom: 1rem;
-}
-
-.login-overlay-content p {
-    color: #64748b;
-    margin-bottom: 1.5rem;
-}
-
-.btn-group {
-    display: flex;
-    gap: 1rem;
-    justify-content: center;
-}
-
-.btn-login {
-    padding: 0.75rem 2rem;
-    background: #1e6f5c;
-    color: white;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.btn-close {
-    padding: 0.75rem 2rem;
-    background: #e2e8f0;
-    color: #475569;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    font-weight: 600;
-}
-
-.btn-login:hover {
-    background: #289671;
-}
-
-.btn-close:hover {
-    background: #cbd5e1;
-}
-
-/* Responsive */
+/* responsive */
 @media (max-width: 768px) {
     .detail-page-container {
         padding: 1rem;
     }
-
     .dest-detail-header {
         flex-direction: column;
         text-align: center;
         gap: 1rem;
     }
-
     .dest-price-display {
         text-align: center;
     }
-
     .main-image-container {
         height: 250px;
     }
-
     .booking-form-row {
         flex-direction: column;
     }
-
     .info-grid {
         grid-template-columns: repeat(2, 1fr);
     }
