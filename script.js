@@ -63,6 +63,62 @@ function updateNavbar() {
     }
 }
 
+// ---------- Live chat popout (front-end only) ----------
+// To add the chat to any page, just call injectChat() — for example
+// from an inline <script>injectChat();</script> tag at the bottom of
+// the page. Currently used on index.html.
+const chatHTML = `
+    <button id="chatToggle" class="chat-toggle" type="button" onclick="toggleChat()" aria-label="Open chat">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+    <div id="chatPanel" class="chat-panel" style="display: none;">
+        <div class="chat-header">
+            <span><i class="fas fa-headset"></i> Live Support</span>
+            <button class="chat-close" type="button" onclick="toggleChat()" aria-label="Close chat">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div id="chatMessages" class="chat-messages"></div>
+        <form class="chat-input-row" onsubmit="sendChatMessage(event)">
+            <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+            <button type="submit" aria-label="Send"><i class="fas fa-paper-plane"></i></button>
+        </form>
+    </div>
+`;
+
+function injectChat() {
+    if (document.getElementById('chatToggle')) return; // already injected
+    document.body.insertAdjacentHTML('beforeend', chatHTML);
+}
+
+function toggleChat() {
+    const panel = document.getElementById('chatPanel');
+    if (!panel) return;
+    if (panel.style.display === 'flex') {
+        panel.style.display = 'none';
+    } else {
+        panel.style.display = 'flex';
+        document.getElementById('chatInput').focus();
+    }
+}
+
+function sendChatMessage(e) {
+    e.preventDefault();
+    const input = document.getElementById('chatInput');
+    const text = input.value.trim();
+    if (!text) return;
+
+    const messages = document.getElementById('chatMessages');
+    const bubble = document.createElement('div');
+    bubble.className = 'chat-bubble user';
+    bubble.textContent = text;
+    messages.appendChild(bubble);
+
+    input.value = '';
+    input.focus();
+    messages.scrollTop = messages.scrollHeight;
+}
+
 // ---------- Load posts on index.html ----------
 function loadPostsToHome() {
     const container = document.getElementById('postsContainer');
