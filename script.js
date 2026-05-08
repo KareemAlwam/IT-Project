@@ -15,7 +15,8 @@ function logout() {
 
 // Custom Notification System
 function showNotification(message, type = 'info') {
-    const existing = document.querySelector('.custom-notification');
+    // remove any existing notification first (only one shows at a time)
+    const existing = document.getElementById('customNotification');
     if (existing) existing.remove();
 
     const icons = {
@@ -25,6 +26,7 @@ function showNotification(message, type = 'info') {
     };
 
     const notification = document.createElement('div');
+    notification.id = 'customNotification';
     notification.className = `custom-notification ${type}`;
     notification.innerHTML = `
         <div class="custom-notification-content">
@@ -40,15 +42,6 @@ function showNotification(message, type = 'info') {
     setTimeout(() => {
         if (notification.parentElement) notification.remove();
     }, 4000);
-}
-
-function redirectWithNotification(message, type = 'success', url, delay = 900) {
-    showNotification(message, type);
-    if (url) {
-        setTimeout(() => {
-            window.location.href = url;
-        }, delay);
-    }
 }
 
 function updateNavbar() {
@@ -255,40 +248,26 @@ function handleRegister(e) {
 //===============================================================
 
 // Render a list of items into a container, with results count + empty state.
-// opts: { containerId, items, view, label, cardBuilder, useGridList }
-function renderItems(opts) {
-    const container = document.getElementById(opts.containerId);
+function renderItems(containerId, items, cardBuilder) {
+    const container = document.getElementById(containerId);
     if (!container) return;
-
-    if (opts.useGridList) {
-        container.className = `destinations-${opts.view}`;
-    }
     container.innerHTML = '';
 
     const countEl = document.getElementById('resultsCount');
 
-    if (opts.items.length === 0) {
-        const colSpan = opts.useGridList ? 'grid-column: 1/-1; ' : '';
-        container.innerHTML = `<div class="empty-posts" style="${colSpan}text-align: center; padding: 3rem;">No ${opts.label}s match your filters.</div>`;
-        if (countEl) countEl.textContent = `0 ${opts.label}s found`;
+    if (items.length === 0) {
+        container.innerHTML = `<div class="empty-posts" style="grid-column: 1/-1; text-align: center; padding: 3rem;">No results match your filters.</div>`;
+        countEl.textContent = '0 results found';
         return;
     }
 
-    if (countEl) {
-        countEl.textContent = `${opts.items.length} ${opts.label}${opts.items.length !== 1 ? 's' : ''} found`;
-    }
+    // if (countEl) {
+        countEl.textContent = `${items.length} result${items.length !== 1 ? 's' : ''} found`;
+    // }
 
-    container.innerHTML = '';
-    opts.items.forEach(item => {
-        container.innerHTML += opts.cardBuilder(item, opts.view);
+    items.forEach(item => {
+        container.innerHTML += cardBuilder(item);
     });
-}
-
-// Save selected item to localStorage and navigate to its detail page.
-function openItemDetail(item, storageKey, detailUrl) {
-    if (!item) return;
-    localStorage.setItem(storageKey, JSON.stringify(item));
-    window.location.href = detailUrl;
 }
 
 // Booking guard: if not logged in, save where to come back and redirect to login.
@@ -322,7 +301,7 @@ const destinationsData = [
         category: "historical",
         rating: 4.8,
         price: 120,
-        images: ["images/pyrimds.jpeg", "images/pyrimds.jpeg", "images/pyrimds.jpeg"],
+        images: ["images/pyramids.jpg", "images/pyramids.jpg", "images/pyramids.jpg"],
         video: true,
         description: "The Great Pyramid of Giza is the oldest and largest of the pyramids in the Giza pyramid complex. It is the oldest of the Seven Wonders of the Ancient World, and the only one to remain largely intact.",
         events: [
@@ -344,7 +323,7 @@ const destinationsData = [
         category: "beach",
         rating: 4.6,
         price: 250,
-        images: ["images/sharmElShek.jpeg", "images/sharmElShek.jpeg", "images/sharmElShek.jpeg"],
+        images: ["images/sharm.jpg", "images/sharm.jpg", "images/sharm.jpg"],
         video: true,
         description: "Sharm El Sheikh is an Egyptian resort town between the desert of the Sinai Peninsula and the Red Sea. It's known for its sheltered sandy beaches, clear waters and coral reefs.",
         events: [
@@ -365,7 +344,7 @@ const destinationsData = [
         category: "historical",
         rating: 4.9,
         price: 80,
-        images: ["images/pyrimds.jpeg", "images/pyrimds.jpeg", "images/pyrimds.jpeg"],
+        images: ["images/luxor.jpg", "images/luxor.jpg", "images/luxor.jpg"],
         video: true,
         description: "Luxor Temple is a large Ancient Egyptian temple complex located on the east bank of the Nile River in the city today known as Luxor and was constructed approximately 1400 BCE.",
         events: [
@@ -387,7 +366,7 @@ const destinationsData = [
         category: "city",
         rating: 4.7,
         price: 350,
-        images: ["images/Paris.jpg", "images/Paris.jpg", "images/Paris.jpg"],
+        images: ["images/paris.jpg", "images/paris.jpg", "images/paris.jpg"],
         video: true,
         description: "Paris, France's capital, is a major European city and a global center for art, fashion, gastronomy and culture. Its 19th-century cityscape is crisscrossed by wide boulevards and the River Seine.",
         events: [
@@ -408,7 +387,7 @@ const destinationsData = [
         category: "historical",
         rating: 4.8,
         price: 150,
-        images: ["images/Paris.jpg", "images/Paris.jpg", "images/Paris.jpg"],
+        images: ["images/colosseum.jpg", "images/colosseum.jpg", "images/colosseum.jpg"],
         video: true,
         description: "The Colosseum is an oval amphitheatre in the centre of the city of Rome, Italy, just east of the Roman Forum. It is the largest ancient amphitheatre ever built.",
         events: [
@@ -429,7 +408,7 @@ const destinationsData = [
         category: "nature",
         rating: 4.9,
         price: 200,
-        images: ["images/sharmElShek.jpeg", "images/sharmElShek.jpeg", "images/sharmElShek.jpeg"],
+        images: ["images/fuji.jpg", "images/fuji.jpg", "images/fuji.jpg"],
         video: true,
         description: "Mount Fuji is an active volcano about 100 kilometers southwest of Tokyo. Commonly called 'Fuji-san,' it's the country's tallest peak, considered one of the 3 sacred mountains.",
         events: [
@@ -448,8 +427,8 @@ let currentView = 'grid';
 let currentDestinations = [...destinationsData];
 
 // Builds the HTML for a single destination card (grid or list view)
-function destinationCard(d, view) {
-    const desc = view === 'list'
+function destinationCard(d) {
+    const desc = currentView === 'list'
         ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${d.description.substring(0, 120)}...</p>`
         : '';
     return `
@@ -471,14 +450,8 @@ function destinationCard(d, view) {
 }
 
 function renderDestinations() {
-    renderItems({
-        containerId: 'destinationsContainer',
-        items: currentDestinations,
-        view: currentView,
-        label: 'destination',
-        cardBuilder: destinationCard,
-        useGridList: true
-    });
+    document.getElementById('destinationsContainer').className = `destinations-${currentView}`;
+    renderItems('destinationsContainer', currentDestinations, destinationCard);
 }
 
 function applyFilters() {
@@ -496,7 +469,10 @@ function applyFilters() {
 }
 
 function openDetail(id) {
-    openItemDetail(destinationsData.find(d => d.id === id), 'selectedDestination', 'Dist_Detail.html');
+    const dest = destinationsData.find(d => d.id === id);
+    if (!dest) return;
+    localStorage.setItem('selectedDestination', JSON.stringify(dest));
+    window.location.href = 'Dist_Detail.html';
 }
 
 // ============================================================
@@ -622,8 +598,8 @@ const hotelsData = [
 let currentHotelView = 'grid';
 let currentHotels = [...hotelsData];
 
-function hotelCard(h, view) {
-    const desc = view === 'list'
+function hotelCard(h) {
+    const desc = currentHotelView === 'list'
         ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${h.description.substring(0, 120)}...</p>`
         : '';
     return `
@@ -645,14 +621,8 @@ function hotelCard(h, view) {
 }
 
 function renderHotels() {
-    renderItems({
-        containerId: 'hotelsContainer',
-        items: currentHotels,
-        view: currentHotelView,
-        label: 'hotel',
-        cardBuilder: hotelCard,
-        useGridList: true
-    });
+    document.getElementById('hotelsContainer').className = `destinations-${currentHotelView}`;
+    renderItems('hotelsContainer', currentHotels, hotelCard);
 }
 
 function applyHotelFilters() {
@@ -696,7 +666,10 @@ function clearFilters() {
 }
 
 function openHotelDetail(id) {
-    openItemDetail(hotelsData.find(h => h.id === id), 'selectedHotel', 'Hotel_Detail.html');
+    const hotel = hotelsData.find(h => h.id === id);
+    if (!hotel) return;
+    localStorage.setItem('selectedHotel', JSON.stringify(hotel));
+    window.location.href = 'Hotel_Detail.html';
 }
 
 // ============================================================
@@ -714,56 +687,49 @@ const flightsData = [
 let currentFlights = [...flightsData];
 
 function flightCard(flight) {
-    const stopsLabel = flight.stops === 0
-        ? 'Direct'
-        : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`;
+    let stopsLabel = 'Direct';
+    if (flight.stops === 1) stopsLabel = '1 stop';
+    if (flight.stops > 1)   stopsLabel = flight.stops + ' stops';
     return `
         <div class="flight-card" onclick="openFlightDetail(${flight.id})">
             <div class="flight-header">
                 <div class="airline-info">
                     <span class="airline-name">${flight.airline}</span>
                     <span class="flight-number">${flight.flightNumber}</span>
-                </div>
-                <div class="flight-price">$${flight.price}</div>
-            </div>
+                    </div>
+                    <div class="flight-price">$${flight.price}</div>
+                    </div>
             <div class="flight-route">
                 <div class="departure">
                     <div class="time">${flight.departureTime}</div>
                     <div class="city">${flight.from}</div>
-                </div>
-                <div class="flight-duration">
+                    </div>
+                    <div class="flight-duration">
                     <div class="duration">${flight.duration}</div>
                     <div class="stops">${stopsLabel}</div>
-                </div>
-                <div class="arrival">
+                    </div>
+                    <div class="arrival">
                     <div class="time">${flight.arrivalTime}</div>
                     <div class="city">${flight.to}</div>
-                </div>
-            </div>
-            <div class="flight-details">
-                <span class="aircraft">${flight.aircraft}</span>
+                    </div>
+                    </div>
+                    <div class="flight-details">
+                    <span class="aircraft">${flight.aircraft}</span>
                 <span class="class">${flight.class}</span>
                 <span class="baggage">${flight.baggage}</span>
             </div>
-        </div>`;
+            </div>`;
 }
 
 function renderFlights() {
-    renderItems({
-        containerId: 'flightsContainer',
-        items: currentFlights,
-        view: null,
-        label: 'flight',
-        cardBuilder: flightCard,
-        useGridList: false
-    });
+    renderItems('flightsContainer', currentFlights, flightCard);
 }
 
 function searchFlights() {
     const from = document.getElementById('fromInput')?.value.toLowerCase() || '';
     const to = document.getElementById('toInput')?.value.toLowerCase() || '';
     const date = document.getElementById('dateInput')?.value || '';
-
+    
     currentFlights = flightsData.filter(flight =>
         flight.from.toLowerCase().includes(from) &&
         flight.to.toLowerCase().includes(to) &&
@@ -819,7 +785,10 @@ function updatePriceRange(value) {
 }
 
 function openFlightDetail(id) {
-    openItemDetail(flightsData.find(f => f.id === id), 'selectedFlight', 'Flight_Detail.html');
+    const flight = flightsData.find(f => f.id === id);
+    if (!flight) return;
+    localStorage.setItem('selectedFlight', JSON.stringify(flight));
+    window.location.href = 'Flight_Detail.html';
 }
 
 // ============================================================
@@ -828,9 +797,7 @@ function openFlightDetail(id) {
 
 // Render the comments list for a detail page (destination or hotel).
 function renderDetailComments(item) {
-    const list = document.getElementById('detailComments');
-    if (!list) return;
-
+    
     if (!item.comments || item.comments.length === 0) {
         list.innerHTML = '<p style="color: #94a3b8;">No reviews yet. Be the first to leave one!</p>';
         return;
@@ -912,10 +879,16 @@ function loadDestinationDetail() {
         </div>`;
     });
 
-    document.getElementById('totalPrice').textContent = `$${dest.price}`;
     localStorage.setItem('selectedDestinationPrice', dest.price);
+    updateDestinationTotal();
 
     renderDetailComments(dest);
+}
+
+function updateDestinationTotal() {
+    const guide = document.getElementById('bookGuide').checked;
+    const total = dest.price + (guide ? 50 : 0);
+    document.getElementById('totalPrice').textContent = '$' + total;
 }
 
 function bookDestination() {
@@ -929,7 +902,8 @@ function bookDestination() {
     }
 
     const dest = JSON.parse(localStorage.getItem('selectedDestination'));
-    redirectWithNotification(`✅ Booking confirmed for ${dest.name}!`, 'success', 'Dist_Search.html');
+    showNotification(`Booking confirmed for ${dest.name}!`, 'success');
+    setTimeout(() => window.location.href = 'Dist_Search.html', 900);
 }
 
 // ============================================================
@@ -975,10 +949,28 @@ function loadHotelDetail() {
         <div><i class="fas fa-sun" style="color: #f59e0b; font-size: 1.5rem;"></i> ${hotel.weather.condition}</div>
     `;
 
-    document.getElementById('totalPrice').textContent = `$${hotel.pricePerNight}`;
     localStorage.setItem('selectedHotelPrice', hotel.pricePerNight);
+    updateHotelTotal();
 
     renderDetailComments(hotel);
+}
+
+function updateHotelTotal() {
+    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    if (!hotel) return;
+
+    const checkIn = document.getElementById('checkInDate').value;
+    const checkOut = document.getElementById('checkOutDate').value;
+    let nights = 1;
+    if (checkIn && checkOut) {
+        const days = Math.ceil((new Date(checkOut) - new Date(checkIn)) / 86400000);
+        if (days > 0) nights = days;
+    }
+
+    let total = hotel.pricePerNight * nights;
+    if (document.getElementById('breakfast').checked) total += 20 * nights;
+    if (document.getElementById('transfer').checked)  total += 30;
+    document.getElementById('totalPrice').textContent = '$' + total;
 }
 
 function bookHotel() {
@@ -997,7 +989,8 @@ function bookHotel() {
     }
 
     const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
-    redirectWithNotification(`✅ Booking confirmed for ${hotel.name}!`, 'success', 'Hotel_Search.html');
+    showNotification(`Booking confirmed for ${hotel.name}!`, 'success');
+    setTimeout(() => window.location.href = 'Hotel_Search.html', 900);
 }
 
 // ============================================================
@@ -1018,9 +1011,10 @@ function loadFlightDetail() {
     document.getElementById('detailArrivalTime').textContent = flight.arrivalTime;
     document.getElementById('detailDuration').textContent = flight.duration;
     document.getElementById('detailTotalDuration').textContent = flight.duration;
-    document.getElementById('detailStops').textContent = flight.stops === 0
-        ? 'Direct'
-        : `${flight.stops} stop${flight.stops > 1 ? 's' : ''}`;
+    let stopsLabel = 'Direct';
+    if (flight.stops === 1) stopsLabel = '1 stop';
+    if (flight.stops > 1)   stopsLabel = flight.stops + ' stops';
+    document.getElementById('detailStops').textContent = stopsLabel;
     document.getElementById('detailBaggage').textContent = flight.baggage;
     document.getElementById('detailAircraft').textContent = flight.aircraft;
     document.getElementById('detailAircraftType').textContent = flight.aircraft;
@@ -1028,8 +1022,17 @@ function loadFlightDetail() {
     document.getElementById('detailDepartureDate').textContent = flight.date;
     document.getElementById('detailArrivalDate').textContent = flight.date;
 
-    document.getElementById('totalPrice').textContent = `$${flight.price}`;
     localStorage.setItem('selectedFlightPrice', flight.price);
+    updateFlightTotal();
+}
+
+function updateFlightTotal() {
+    const flight = JSON.parse(localStorage.getItem('selectedFlight'));
+    if (!flight) return;
+    const adults = parseInt(document.getElementById('adultCount').value) || 0;
+    const children = parseInt(document.getElementById('childCount').value) || 0;
+    const total = flight.price * (adults + children);
+    document.getElementById('totalPrice').textContent = '$' + total;
 }
 
 function bookFlight() {
@@ -1043,32 +1046,8 @@ function bookFlight() {
     }
 
     const flight = JSON.parse(localStorage.getItem('selectedFlight'));
-    redirectWithNotification(`Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success', 'Flight_Search.html');
-}
-
-// ============================================================
-// ---------- Dist_Search modal (legacy, kept for HTML compat) ----------
-// The Dist_Search.html page still contains an unused modal. These
-// stubs keep onclick handlers from erroring if it's ever opened.
-// ============================================================
-function closeDetail() {
-    const modal = document.getElementById('detailModal');
-    if (modal) modal.classList.remove('active');
-    document.body.style.overflow = '';
-}
-
-function submitBooking(e) {
-    e.preventDefault();
-    if (!getCurrentUser()) {
-        showNotification('Please login first to make a booking.', 'error');
-        return;
-    }
-    showNotification('Booking submitted!', 'success');
-    document.getElementById('bookingForm').reset();
-}
-
-function addComment() {
-    addDetailComment('selectedDestination');
+    showNotification(`Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success');
+    setTimeout(() => window.location.href = 'Flight_Search.html', 900);
 }
 
 // ============================================================
@@ -1133,9 +1112,6 @@ document.addEventListener('DOMContentLoaded', () => {
         document.getElementById('searchInput')?.addEventListener('input', applyFilters);
         document.getElementById('ratingFilter')?.addEventListener('change', applyFilters);
         document.getElementById('locationFilter')?.addEventListener('change', applyFilters);
-        document.getElementById('detailModal')?.addEventListener('click', (e) => {
-            if (e.target.id === 'detailModal') closeDetail();
-        });
     }
 
     // Hotel Search page

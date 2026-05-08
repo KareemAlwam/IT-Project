@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="MainLayout/homePage.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link id="layoutTheme" rel="stylesheet" href="" data-newhref="NewLayout/homePage.css">
+    <style>.dark-only { display: none; }</style>
     <script>
         (function(){
             if (localStorage.getItem('layout') === 'new') {
@@ -31,28 +32,25 @@
 
     <div class="search-section">
         <div class="hero-content">
-            <h2 class="search-title">Discover Your Next Adventure</h2>
-            <p class="search-subtitle">Explore the world with TravelHub — your gateway to unforgettable experiences.</p>
+            <div class="hero-brand dark-only">TravelHub</div>
+            <h2 class="search-title">Where to next?</h2>
             <div class="search-options">
-                <a href="Dist_Search.html" class="search-card search-card-primary"><i class="fas fa-map-marker-alt"></i> Find Destinations</a>
-                <a href="Flight_Search.html" class="search-card"><i class="fas fa-plane"></i> Book Flights</a>
-                <a href="Hotel_Search.html" class="search-card"><i class="fas fa-hotel"></i> Reserve Hotels</a>
+                <!-- Light mode buttons (original look) -->
+                <a href="Dist_Search.html" class="search-card">Destinations</a>
+                <a href="Flight_Search.html" class="search-card">Flights</a>
+                <a href="Hotel_Search.html" class="search-card">Hotels</a>
+                <!-- Dark mode buttons (only visible when .layout-new is active) -->
+                <a href="Dist_Search.html" class="search-card search-card-primary search-card-dark dark-only"><i class="fas fa-map-marker-alt"></i> Find Destinations</a>
+                <a href="Flight_Search.html" class="search-card search-card-dark dark-only"><i class="fas fa-plane"></i> Book Flights</a>
+                <a href="Hotel_Search.html" class="search-card search-card-dark dark-only"><i class="fas fa-hotel"></i> Reserve Hotels</a>
             </div>
         </div>
-        <div class="hero-featured" style="display: none;">
-            <img src="images/pyrimds.jpeg" alt="Pyramids of Giza">
+        <div class="hero-featured dark-only">
+            <img src="images/pyramids.jpg" alt="Pyramids of Giza">
             <div class="hero-featured-overlay">
                 <h3>Pyramids of Giza</h3>
                 <span>Ancient Wonders</span>
             </div>
-        </div>
-    </div>
-
-    <!-- Discover from experience (posts from localStorage) -->
-    <div class="discover">
-        <h2 class="section-title">Discover from experiences</h2>
-        <div id="postsContainer" class="posts-grid">
-            <!-- loaded by JS -->
         </div>
     </div>
 
@@ -61,21 +59,21 @@
         <h2 class="section-title">Today Recommendations</h2>
         <div class="cards">
             <div class="card">
-                <img class="card-img" src="images/pyrimds.jpeg" alt="Pyramids of Giza">
+                <img class="card-img" src="images/pyramids.jpg" alt="Pyramids of Giza">
                 <div class="card-content">
                     <div class="card-title">Pyramids of Giza</div>
                     <p>Cairo, Egypt – ancient wonder.</p>
                 </div>
             </div>
             <div class="card">
-                <img class="card-img" src="images/sharmElShek.jpeg" alt="Sharm El Sheikh">
+                <img class="card-img" src="images/sharm.jpg" alt="Sharm El Sheikh">
                 <div class="card-content">
                     <div class="card-title">Sharm El Sheikh</div>
                     <p>Red Sea, diving & resorts.</p>
                 </div>
             </div>
             <div class="card">
-                <img class="card-img" src="images/Paris.jpg" alt="Paris">
+                <img class="card-img" src="images/paris.jpg" alt="Paris">
                 <div class="card-content">
                     <div class="card-title">Paris, France</div>
                     <p>Eiffel Tower, art, romance.</p>
@@ -84,8 +82,62 @@
         </div>
     </div>
 
-    <footer>
-        <p>TravelHub © 2026 | Share your journey</p>
+    <!-- Discover from experience (posts from localStorage) -->
+    <div class="discover">
+        <h2 class="section-title">Stories and Experiences</h2>
+        <div id="postsContainer" class="posts-grid">
+            <!-- loaded by JS -->
+        </div>
+    </div>
+
+    <footer class="site-footer">
+        <div class="footer-main">
+            <div class="footer-brand">
+                <a href="index.html" class="footer-logo">TravelHub</a>
+                <p class="footer-tagline">Your gateway to unforgettable journeys. Discover, plan, and book your next adventure with confidence.</p>
+                <div class="footer-social">
+                    <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="#" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="Dist_Search.html">Destinations</a></li>
+                    <li><a href="Flight_Search.html">Flights</a></li>
+                    <li><a href="Hotel_Search.html">Hotels</a></li>
+                    <li><a href="index.html">Featured Trips</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About Us</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Help Center</a></li>
+                    <li><a href="#">Privacy Policy</a></li>
+                    <li><a href="#">Terms of Service</a></li>
+                    <li><a href="#">Cookie Policy</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2026 TravelHub. All rights reserved.</p>
+            <p class="footer-bottom-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Sitemap</a>
+            </p>
+        </div>
     </footer>
 
     <script src="script.js"></script>
