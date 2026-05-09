@@ -84,12 +84,35 @@ function addNewPost() {
     return true;
 }
 
+// Real profile page (profile.html): show username, email, post count.
+function loadProfile() {
+    const username = getCurrentUser();
+    if (!username) { window.location.href = "login.html"; return; }
+
+    const users = JSON.parse(localStorage.getItem('users')) || [];
+    const user = users.find(u => u.username === username) || {};
+    const posts = JSON.parse(localStorage.getItem('travelPosts')) || [];
+
+    let count = 0;
+    posts.forEach(p => { if (p.author === username) count++; });
+
+    document.getElementById('profileUsername').textContent = username;
+    document.getElementById('profileEmail').textContent = user.email || '-';
+    document.getElementById('profilePostCount').textContent = count;
+}
+
 document.addEventListener('DOMContentLoaded', () => {
+    // Posts page (posts.html): publish + list user's posts.
     if (document.getElementById('addPostBtn')) {
         if (!getCurrentUser()) {
             window.location.href = "login.html";
         }
         loadMyPosts();
         document.getElementById('addPostBtn').addEventListener('click', addNewPost);
+    }
+
+    // Profile page (profile.html): show profile info.
+    if (document.getElementById('profileUsername')) {
+        loadProfile();
     }
 });

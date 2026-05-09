@@ -8,16 +8,19 @@
    GLOBAL SURFACES
    ============================================ */
 html.layout-new,
-body.layout-new {
+.layout-new body {
     background: #0f172a;
     color: #e2e8f0;
 }
 
 /* ============================================
-   NAVBAR
+   NAVBAR (dark)
+   Mirrors the modern bar from MainLayout/style.css with dark surfaces.
    ============================================ */
 .layout-new .navbar {
-    background: #111827;
+    background: rgba(17, 24, 39, 0.78);
+    -webkit-backdrop-filter: saturate(180%) blur(14px);
+    backdrop-filter: saturate(180%) blur(14px);
     box-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
     border-bottom: 1px solid #1f2937;
 }
@@ -34,6 +37,9 @@ body.layout-new {
     background: #14b8a6;
     color: #0f172a !important;
 }
+.layout-new .login-link:hover {
+    background: #5eead4;
+}
 .layout-new .username-display {
     background: #134e4a;
     color: #5eead4;
@@ -45,31 +51,14 @@ body.layout-new {
     background: #7f1d1d;
 }
 
-/* layout toggle button (visible in BOTH layouts) */
-.layout-toggle-btn {
-    background: transparent;
-    border: 1px solid #cbd5e1;
-    color: #2c3e50;
-    padding: 0.4rem 0.9rem;
-    border-radius: 30px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
-}
-.layout-toggle-btn:hover {
-    background: #1e6f5c;
-    color: white;
-    border-color: #1e6f5c;
-}
-.layout-new .layout-toggle-btn {
+/* dark variant for the small pill toggles (theme + currency) */
+.layout-new .layout-toggle-btn,
+.layout-new .currency-toggle-btn {
     border-color: #5eead4;
     color: #5eead4;
 }
-.layout-new .layout-toggle-btn:hover {
+.layout-new .layout-toggle-btn:hover,
+.layout-new .currency-toggle-btn:hover {
     background: #14b8a6;
     color: #0f172a;
     border-color: #14b8a6;
@@ -86,10 +75,50 @@ body.layout-new {
 .layout-new .modal-content,
 .layout-new .dest-detail-card,
 .layout-new .hotel-detail-card,
-.layout-new .flight-detail-card {
+.layout-new .flight-detail-card,
+.layout-new .profile-card {
     background: #1e293b;
     color: #e2e8f0;
     box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+.layout-new .profile-card h2 {
+    color: #f1f5f9;
+}
+.layout-new .profile-email {
+    color: #94a3b8;
+}
+.layout-new .profile-info {
+    background: #0f172a;
+    border-color: #334155;
+}
+.layout-new .profile-info-row {
+    color: #e2e8f0;
+}
+.layout-new .profile-info-label {
+    color: #94a3b8;
+}
+.layout-new .profile-info-label i,
+.layout-new .profile-avatar {
+    color: #5eead4;
+}
+.layout-new .profile-action-btn {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.layout-new .profile-action-btn:hover {
+    background: #1e293b;
+}
+.layout-new .profile-action-btn.primary {
+    background: #5eead4;
+    border-color: #5eead4;
+    color: #0f172a;
+}
+.layout-new .profile-action-btn.primary:hover {
+    background: #2dd4bf;
+}
+.layout-new .back-btn {
+    color: #5eead4;
 }
 .layout-new .dest-card-title,
 .layout-new .post-title,
@@ -366,4 +395,46 @@ body.layout-new {
 }
 .layout-new .chat-input-row button:hover {
     background: #5eead4;
+}
+
+/* Feedback popup — dark variants */
+.layout-new .feedback-card {
+    background: #1e293b;
+    color: #e2e8f0;
+}
+.layout-new .feedback-form input,
+.layout-new .feedback-form select,
+.layout-new .feedback-form textarea {
+    background: #0f172a;
+    border-color: #334155;
+    color: #e2e8f0;
+}
+.layout-new .feedback-form input::placeholder,
+.layout-new .feedback-form textarea::placeholder {
+    color: #64748b;
+}
+
+/* About / team page — dark variants */
+.layout-new .about-hero h1,
+.layout-new .team-section h2 {
+    color: #f1f5f9;
+}
+.layout-new .about-hero p {
+    color: #cbd5e1;
+}
+.layout-new .team-card {
+    background: #1e293b;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.5);
+}
+.layout-new .team-card i {
+    color: #5eead4;
+}
+.layout-new .team-card h3 {
+    color: #f1f5f9;
+}
+.layout-new .team-role {
+    color: #5eead4;
+}
+.layout-new .team-pages {
+    color: #94a3b8;
 }

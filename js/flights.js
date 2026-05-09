@@ -23,7 +23,7 @@ function flightCard(flight) {
                     <span class="airline-name">${flight.airline}</span>
                     <span class="flight-number">${flight.flightNumber}</span>
                     </div>
-                    <div class="flight-price">$${flight.price}</div>
+                    <div class="flight-price">${formatPrice(flight.price)}</div>
                     </div>
             <div class="flight-route">
                 <div class="departure">
@@ -99,29 +99,45 @@ function clearFlightFilters() {
     document.getElementById('departureTimeFilter').value = 'all';
     document.getElementById('classFilter').value = 'all';
     document.getElementById('priceRange').value = '1000';
-    document.getElementById('priceRangeValue').textContent = '$1000+';
+    refreshPriceRangeLabel();
 
     currentFlights = [...flightsData];
     renderFlights();
 }
 
 function updatePriceRange(value) {
-    document.getElementById('priceRangeValue').textContent = `$${value}`;
+    document.getElementById('priceRangeValue').textContent = formatPrice(parseInt(value));
     applyFlightFilters();
 }
 
+// Refreshes the slider's min/max labels in the active currency.
+// Called on load and when the currency toggle flips.
+function refreshPriceRangeLabel() {
+    const slider = document.getElementById('priceRange');
+    const minEl  = document.getElementById('priceRangeMin');
+    const valEl  = document.getElementById('priceRangeValue');
+    if (minEl) minEl.textContent = formatPrice(0);
+    if (slider && valEl) {
+        const v = parseInt(slider.value);
+        valEl.textContent = (v >= parseInt(slider.max) ? formatPrice(v) + '+' : formatPrice(v));
+    }
+}
+
 function openFlightDetail(id) {
-    const flight = flightsData.find(f => f.id === id);
-    if (!flight) return;
-    localStorage.setItem('selectedFlight', JSON.stringify(flight));
+    localStorage.setItem('selectedFlightId', id);
     window.location.href = 'Flight_Detail.html';
+}
+
+function currentFlight() {
+    const id = parseInt(localStorage.getItem('selectedFlightId'));
+    return flightsData.find(f => f.id === id);
 }
 
 // ============================================================
 // ---------- Flight Detail page ----------
 // ============================================================
 function loadFlightDetail() {
-    const flight = JSON.parse(localStorage.getItem('selectedFlight'));
+    const flight = currentFlight();
     if (!flight) {
         window.location.href = 'Flight_Search.html';
         return;
@@ -146,17 +162,16 @@ function loadFlightDetail() {
     document.getElementById('detailDepartureDate').textContent = flight.date;
     document.getElementById('detailArrivalDate').textContent = flight.date;
 
-    localStorage.setItem('selectedFlightPrice', flight.price);
     updateFlightTotal();
 }
 
 function updateFlightTotal() {
-    const flight = JSON.parse(localStorage.getItem('selectedFlight'));
+    const flight = currentFlight();
     if (!flight) return;
     const adults = parseInt(document.getElementById('adultCount').value) || 0;
     const children = parseInt(document.getElementById('childCount').value) || 0;
     const total = flight.price * (adults + children);
-    document.getElementById('totalPrice').textContent = '$' + total;
+    document.getElementById('totalPrice').textContent = formatPrice(total);
 }
 
 function bookFlight() {
@@ -169,7 +184,7 @@ function bookFlight() {
         return;
     }
 
-    const flight = JSON.parse(localStorage.getItem('selectedFlight'));
+    const flight = currentFlight();
     showNotification(`Flight booked successfully for ${flight.airline} ${flight.flightNumber}!`, 'success');
     setTimeout(() => window.location.href = 'Flight_Search.html', 900);
 }
@@ -177,6 +192,7 @@ function bookFlight() {
 document.addEventListener('DOMContentLoaded', () => {
     if (document.getElementById('flightsContainer')) {
         renderFlights();
+        refreshPriceRangeLabel();
     }
 
     if (document.getElementById('detailAirlineName')) loadFlightDetail();

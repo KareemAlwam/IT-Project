@@ -136,7 +136,7 @@ function hotelCard(h) {
                 </div>
                 ${desc}
                 <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                    <span class="dest-card-price">$${h.pricePerNight}/night</span>
+                    <span class="dest-card-price">${formatPrice(h.pricePerNight)}/night</span>
                     <span>${h.hotelClass}★ Hotel</span>
                 </div>
             </div>
@@ -172,17 +172,21 @@ function applyHotelFilters() {
 }
 
 function openHotelDetail(id) {
-    const hotel = hotelsData.find(h => h.id === id);
-    if (!hotel) return;
-    localStorage.setItem('selectedHotel', JSON.stringify(hotel));
+    localStorage.setItem('selectedHotelId', id);
     window.location.href = 'Hotel_Detail.html';
+}
+
+// Look up the currently-selected hotel from the in-memory array.
+function currentHotel() {
+    const id = parseInt(localStorage.getItem('selectedHotelId'));
+    return hotelsData.find(h => h.id === id);
 }
 
 // ============================================================
 // ---------- Hotel Detail page ----------
 // ============================================================
 function loadHotelDetail() {
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    const hotel = currentHotel();
     if (!hotel) {
         window.location.href = 'Hotel_Search.html';
         return;
@@ -190,7 +194,7 @@ function loadHotelDetail() {
 
     document.getElementById('detailHotelName').textContent = hotel.name;
     document.getElementById('detailHotelClass').textContent = `${hotel.hotelClass}★ Hotel`;
-    document.getElementById('detailHotelPrice').textContent = `$${hotel.pricePerNight}`;
+    document.getElementById('detailHotelPrice').textContent = formatPrice(hotel.pricePerNight);
     document.getElementById('detailHotelLocation').textContent = hotel.location;
     document.getElementById('detailHotelRating').innerHTML = `<i class="fas fa-star"></i> ${hotel.rating}`;
     document.getElementById('detailCheckIn').textContent = hotel.checkIn;
@@ -221,14 +225,19 @@ function loadHotelDetail() {
         <div><i class="fas fa-sun" style="color: #f59e0b; font-size: 1.5rem;"></i> ${hotel.weather.condition}</div>
     `;
 
-    localStorage.setItem('selectedHotelPrice', hotel.pricePerNight);
+    // Keep the addon labels' prices in the active currency.
+    const breakfastLabel = document.getElementById('breakfastAddonLabel');
+    if (breakfastLabel) breakfastLabel.textContent = `Breakfast Included (+${formatPrice(20)}/night)`;
+    const transferLabel = document.getElementById('transferAddonLabel');
+    if (transferLabel) transferLabel.textContent = `Airport Transfer (+${formatPrice(30)})`;
+
     updateHotelTotal();
 
     renderDetailComments(hotel);
 }
 
 function updateHotelTotal() {
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    const hotel = currentHotel();
     if (!hotel) return;
 
     const checkIn = document.getElementById('checkInDate').value;
@@ -242,7 +251,7 @@ function updateHotelTotal() {
     let total = hotel.pricePerNight * nights;
     if (document.getElementById('breakfast').checked) total += 20 * nights;
     if (document.getElementById('transfer').checked)  total += 30;
-    document.getElementById('totalPrice').textContent = '$' + total;
+    document.getElementById('totalPrice').textContent = formatPrice(total);
 }
 
 function bookHotel() {
@@ -260,9 +269,14 @@ function bookHotel() {
         return;
     }
 
-    const hotel = JSON.parse(localStorage.getItem('selectedHotel'));
+    const hotel = currentHotel();
     showNotification(`Booking confirmed for ${hotel.name}!`, 'success');
     setTimeout(() => window.location.href = 'Hotel_Search.html', 900);
+}
+
+function addHotelComment() {
+    const hotel = currentHotel();
+    if (hotel) addCommentTo(hotel);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

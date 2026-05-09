@@ -66,3 +66,109 @@ button:hover {
     margin-top: 5px;
 }
 
+/* Real profile page (profile.html) */
+.profile-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    max-width: 520px;
+    margin: 0 auto;
+}
+
+.profile-avatar {
+    font-size: 5rem;
+    color: #1e6f5c;
+    margin-bottom: 1rem;
+    line-height: 1;
+}
+
+.profile-card h2 {
+    margin: 0 0 0.25rem;
+    color: #0f172a;
+}
+
+.profile-email {
+    color: #64748b;
+    margin: 0 0 1.5rem;
+}
+
+.profile-info {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 1rem 1.25rem;
+    text-align: left;
+    margin-bottom: 1.5rem;
+}
+
+.profile-info-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.5rem 0;
+    color: #334155;
+}
+
+.profile-info-label {
+    color: #64748b;
+    font-size: 0.95rem;
+}
+
+.profile-info-label i {
+    margin-right: 0.5rem;
+    color: #1e6f5c;
+}
+
+.profile-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: center;
+    flex-wrap: wrap;
+}
+
+.profile-action-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 10px 22px;
+    border-radius: 40px;
+    border: 1px solid #cbd5e1;
+    background: #ffffff;
+    color: #1e293b;
+    cursor: pointer;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.profile-action-btn:hover {
+    background: #f1f5f9;
+}
+
+.profile-action-btn.primary {
+    background: #1e6f5c;
+    color: #ffffff;
+    border-color: #1e6f5c;
+}
+
+.profile-action-btn.primary:hover {
+    background: #155a4a;
+}
+
+/* Back link on posts.html */
+.back-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: #1e6f5c;
+    text-decoration: none;
+    font-weight: 600;
+    margin-bottom: 1rem;
+}
+
+.back-btn:hover {
+    text-decoration: underline;
+}
+

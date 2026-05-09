@@ -3,30 +3,20 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TravelHub - Destination Details</title>
+    <title>Rihla - Destination Details</title>
     <link rel="stylesheet" href="MainLayout/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="MainLayout/Dist_Detail.css">
-    <link id="layoutTheme" rel="stylesheet" href="" data-newhref="NewLayout/detail.css">
-    <script>
-        (function(){
-            if (localStorage.getItem('layout') === 'new') {
-                document.documentElement.classList.add('layout-new');
-                var l = document.getElementById('layoutTheme');
-                if (l) l.setAttribute('href', l.getAttribute('data-newhref'));
-            }
-        })();
-    </script>
+    <link rel="stylesheet" href="NewLayout/detail.css">
 </head>
 <body>
     <!-- Navbar -->
     <nav class="navbar">
-        <a href="index.html" class="logo">TravelHub</a>
+        <a href="index.html" class="logo">Rihla</a>
         <div class="nav-links">
-            <a href="profile.html">Profile</a>
+            <button id="currencyToggleBtn" class="currency-toggle-btn" type="button" onclick="toggleCurrency()">EGP</button>
             <button id="layoutToggleBtn" class="layout-toggle-btn" type="button" onclick="toggleLayout()">Dark</button>
             <a href="login.html" id="loginNavLink" class="login-link">Login</a>
-            <button id="logoutBtn" class="logout-btn" onclick="logout()" style="display: none;">Logout</button>
         </div>
     </nav>
 
@@ -57,6 +47,15 @@
                 <div class="thumbnail-container" id="detailThumbnailContainer">
                     <!-- Thumbnails will be added here -->
                 </div>
+            </div>
+
+            <!-- Video (only shown for destinations that have a promo file) -->
+            <div class="dest-video-section" id="destVideoSection" style="display:none;">
+                <h3 class="info-section-title"><i class="fas fa-video"></i> Destination Promo</h3>
+                <video class="dest-video" id="destVideo" autoplay muted loop playsinline disablepictureinpicture>
+                    <source id="destVideoSource" src="" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
 
             <!-- Info Section -->
@@ -90,7 +89,16 @@
                 <!-- Events -->
                 <div class="events-widget">
                     <h3 class="info-section-title"><i class="fas fa-calendar-alt"></i> Events & Tours</h3>
-                    <div class="events-list" id="detailEventsList"></div>
+                    <table class="events-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Event</th>
+                                <th>Time</th>
+                            </tr>
+                        </thead>
+                        <tbody id="detailEventsList"></tbody>
+                    </table>
                 </div>
 
                 <!-- Booking Card -->
@@ -111,7 +119,7 @@
                     <div class="form-group">
                         <label class="checkbox-label">
                             <input type="checkbox" id="bookGuide" onchange="updateDestinationTotal()">
-                            <span>Book a Tour Guide (+$50)</span>
+                            <span id="guideAddonLabel">Book a Tour Guide (+$50)</span>
                         </label>
                     </div>
 
@@ -138,7 +146,7 @@
 <footer class="site-footer">
         <div class="footer-main">
             <div class="footer-brand">
-                <a href="index.html" class="footer-logo">TravelHub</a>
+                <a href="index.html" class="footer-logo">Rihla</a>
                 <p class="footer-tagline">Your gateway to unforgettable journeys. Discover, plan, and book your next adventure with confidence.</p>
                 <div class="footer-social">
                     <a href="#" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
@@ -159,10 +167,10 @@
             <div class="footer-col">
                 <h4>Company</h4>
                 <ul>
-                    <li><a href="#">About Us</a></li>
+                    <li><a href="about.html">About Us</a></li>
                     <li><a href="#">Careers</a></li>
                     <li><a href="#">Press</a></li>
-                    <li><a href="#">Contact</a></li>
+                    <li><a href="#" onclick="toggleFeedback(); return false;">Contact</a></li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -176,7 +184,7 @@
             </div>
         </div>
         <div class="footer-bottom">
-            <p>&copy; 2026 TravelHub. All rights reserved.</p>
+            <p>&copy; 2026 Rihla. All rights reserved.</p>
             <p class="footer-bottom-links">
                 <a href="#">Privacy</a>
                 <a href="#">Terms</a>

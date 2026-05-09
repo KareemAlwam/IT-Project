@@ -47,20 +47,9 @@ function showNotification(message, type = 'info') {
 function updateNavbar() {
     const user = getCurrentUser();
     const loginLink = document.getElementById('loginNavLink') || document.getElementById('profileLoginLink');
-    const logoutBtn = document.getElementById('logoutBtn');
     if (!loginLink) return;
-
-    if (user) {
-        loginLink.textContent = user;
-        loginLink.href = 'profile.html';
-        loginLink.onclick = null;
-        if (logoutBtn) logoutBtn.style.display = 'inline-block';
-    } else {
-        loginLink.textContent = 'Login';
-        loginLink.href = 'login.html';
-        loginLink.onclick = null;
-        if (logoutBtn) logoutBtn.style.display = 'none';
-    }
+    loginLink.textContent = user || 'Login';
+    loginLink.href = user ? 'profile.html' : 'login.html';
 }
 
 // ---------- Live chat popout (front-end only) ----------
@@ -192,6 +181,8 @@ function clearFilters() {
 
 // Render the comments list for a detail page (destination or hotel).
 function renderDetailComments(item) {
+    const list = document.getElementById('detailComments');
+    if (!list) return;
 
     if (!item.comments || item.comments.length === 0) {
         list.innerHTML = '<p style="color: #94a3b8;">No reviews yet. Be the first to leave one!</p>';
@@ -208,50 +199,28 @@ function renderDetailComments(item) {
     });
 }
 
-// Add a comment to whichever item is currently being viewed.
-function addDetailComment(storageKey) {
+// Push a comment onto an item's in-memory array, then re-render.
+// Called from addDestinationComment / addHotelComment in their page JS.
+function addCommentTo(item) {
     const input = document.getElementById('commentText');
     const text = input.value.trim();
 
-    if (!text) {
-        showNotification('Please write a review.', 'error');
-        return;
-    }
-    if (!getCurrentUser()) {
-        showNotification('Please login to leave a review.', 'error');
-        return;
-    }
+    if (!text) { showNotification('Please write a review.', 'error'); return; }
+    if (!getCurrentUser()) { showNotification('Please login to leave a review.', 'error'); return; }
 
-    const item = JSON.parse(localStorage.getItem(storageKey));
-    if (!item.comments) item.comments = [];
+    item.comments = item.comments || [];
     item.comments.push({ author: getCurrentUser(), text });
     renderDetailComments(item);
     input.value = '';
 }
 
-function addDestinationComment() { addDetailComment('selectedDestination'); }
-function addHotelComment()       { addDetailComment('selectedHotel'); }
-
 // ============================================================
 // ---------- Layout (theme) toggle ----------
-// Each page has a <link id="layoutTheme"> + a tiny inline pre-paint
-// script in <head> that reads localStorage('layout') and sets the
-// href + body.layout-new class before paint to avoid flash.
-// data-newhref on the <link> tells us which NewLayout file this
-// page should load when the new layout is active.
+// Dark CSS is always loaded; the .layout-new class on <html>
+// flips the dark rules on/off. localStorage remembers the choice.
 // ============================================================
 function applyLayout(name) {
-    const link = document.getElementById('layoutTheme');
-    const newHref = link ? link.getAttribute('data-newhref') : '';
-    if (name === 'new') {
-        document.documentElement.classList.add('layout-new');
-        document.body.classList.add('layout-new');
-        if (link && newHref) link.setAttribute('href', newHref);
-    } else {
-        document.documentElement.classList.remove('layout-new');
-        document.body.classList.remove('layout-new');
-        if (link) link.setAttribute('href', '');
-    }
+    document.documentElement.classList.toggle('layout-new', name === 'new');
     const btn = document.getElementById('layoutToggleBtn');
     if (btn) btn.textContent = name === 'new' ? 'Light' : 'Dark';
 }
@@ -262,8 +231,115 @@ function toggleLayout() {
     applyLayout(next);
 }
 
-// Always-on init: layout theme + navbar state.
+// ============================================================
+// ---------- Currency toggle (USD <-> EGP) ----------
+// Raw prices live in USD. currencyRate = 1 means USD, 50 means EGP.
+// formatPrice(usd) prints the price in whichever is active.
+// ============================================================
+let currencyRate = localStorage.getItem('currency') === 'EGP' ? 50 : 1;
+
+function formatPrice(usd) {
+    const symbol = currencyRate === 50 ? 'E£' : '$';
+    return symbol + Math.round(usd * currencyRate);
+}
+
+function rerenderPrices() {
+    if (document.getElementById('destinationsContainer') ) {
+        renderDestinations();
+    }
+    if (document.getElementById('hotelsContainer') ){
+        renderHotels();
+    }
+    if (document.getElementById('flightsContainer') ) {
+        renderFlights();
+    }
+    if (document.getElementById('detailDestPrice')) {
+        loadDestinationDetail();
+    }
+    if (document.getElementById('detailHotelPrice') ) {
+        loadHotelDetail();
+    }
+    if (document.getElementById('detailAirlineName')) {
+        loadFlightDetail();
+    }
+    if (typeof refreshPriceRangeLabel === 'function') refreshPriceRangeLabel();
+}
+
+function toggleCurrency() {
+    currencyRate = currencyRate === 1 ? 50 : 1;
+    localStorage.setItem('currency', currencyRate === 50 ? 'EGP' : 'USD');
+    document.getElementById('currencyToggleBtn').textContent = currencyRate === 50 ? 'USD' : 'EGP';
+    rerenderPrices();
+}
+
+// ============================================================
+// ---------- Feedback / Complaints popup ----------
+// Floating button opens a modal with a complaint form + a table
+// of previously submitted feedback (kept in localStorage).
+// ============================================================
+const feedbackHTML = `
+    <div id="feedbackModal" class="feedback-modal" style="display: none;" onclick="if(event.target===this)toggleFeedback()">
+        <div class="feedback-card">
+            <div class="feedback-header">
+                <span><i class="fas fa-comment-alt"></i> Feedback & Complaints</span>
+                <button class="feedback-close" type="button" onclick="toggleFeedback()" aria-label="Close">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form class="feedback-form" onsubmit="submitFeedback(event)" novalidate>
+                <div class="feedback-row">
+                    <input type="text" id="feedbackName" placeholder="Your name">
+                    <input type="email" id="feedbackEmail" placeholder="Your email">
+                </div>
+                <select id="feedbackSubject">
+                    <option value="Complaint">Complaint</option>
+                    <option value="Suggestion">Suggestion</option>
+                    <option value="Bug Report">Bug Report</option>
+                    <option value="Praise">Praise</option>
+                </select>
+                <textarea id="feedbackMessage" rows="3" placeholder="Tell us what's on your mind..."></textarea>
+                <div id="feedbackError" class="error-msg"></div>
+                <button type="submit" class="feedback-submit">Submit</button>
+            </form>
+        </div>
+    </div>
+`;
+
+function injectFeedback() {
+    if (document.getElementById('feedbackModal')) return;
+    document.body.insertAdjacentHTML('beforeend', feedbackHTML);
+}
+
+function toggleFeedback() {
+    const m = document.getElementById('feedbackModal');
+    if (!m) return;
+    m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+}
+
+function submitFeedback(e) {
+    e.preventDefault();
+    const name = document.getElementById('feedbackName').value.trim();
+    const email = document.getElementById('feedbackEmail').value.trim();
+    const message = document.getElementById('feedbackMessage').value.trim();
+    const err = document.getElementById('feedbackError');
+
+    if (!name || !email || !message) { err.textContent = 'All fields are required.'; return; }
+    if (!email.includes('@'))         { err.textContent = 'Enter a valid email address.'; return; }
+    if (message.length < 5)           { err.textContent = 'Message is too short.'; return; }
+    err.textContent = '';
+
+    document.getElementById('feedbackName').value = '';
+    document.getElementById('feedbackEmail').value = '';
+    document.getElementById('feedbackMessage').value = '';
+    toggleFeedback();
+    showNotification('Thanks! Your feedback was submitted.', 'success');
+}
+
+// Always-on init: layout theme + navbar state + currency button + feedback popup.
 document.addEventListener('DOMContentLoaded', () => {
     applyLayout(localStorage.getItem('layout') === 'new' ? 'new' : 'main');
     updateNavbar();
+    const cb = document.getElementById('currencyToggleBtn');
+    if (cb) cb.textContent = currencyRate === 50 ? 'USD' : 'EGP';
+    injectFeedback();
 });

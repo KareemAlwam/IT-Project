@@ -56,16 +56,26 @@
     border-color: #334155;
 }
 
-/* events */
-.layout-new .event-item {
+/* events table */
+.layout-new .events-table {
     background: #0f172a;
     border-color: #334155;
 }
-.layout-new .event-name {
-    color: #e2e8f0;
+.layout-new .events-table thead {
+    background: #1e293b;
 }
-.layout-new .event-time {
-    background: #134e4a;
+.layout-new .events-table th {
+    color: #94a3b8;
+    border-bottom-color: #334155;
+}
+.layout-new .events-table td {
+    color: #e2e8f0;
+    border-bottom-color: #1e293b;
+}
+.layout-new .events-table tbody tr:hover {
+    background: #1e293b;
+}
+.layout-new .events-table td i {
     color: #5eead4;
 }
 

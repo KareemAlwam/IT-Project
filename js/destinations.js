@@ -11,7 +11,7 @@ const destinationsData = [
         rating: 4.8,
         price: 120,
         images: ["images/pyramids.jpg", "images/pyramids.jpg", "images/pyramids.jpg"],
-        video: true,
+        video: "media/pyrimds.mp4",
         description: "The Great Pyramid of Giza is the oldest and largest of the pyramids in the Giza pyramid complex. It is the oldest of the Seven Wonders of the Ancient World, and the only one to remain largely intact.",
         events: [
             { name: "Sound & Light Show", time: "19:00 - 20:30" },
@@ -151,7 +151,7 @@ function destinationCard(d) {
                 </div>
                 ${desc}
                 <div class="dest-card-meta" style="margin-top: 0.5rem;">
-                    <span class="dest-card-price">$${d.price}</span>
+                    <span class="dest-card-price">${formatPrice(d.price)}</span>
                     <span style="text-transform: capitalize;">${d.category}</span>
                 </div>
             </div>
@@ -178,17 +178,21 @@ function applyFilters() {
 }
 
 function openDetail(id) {
-    const dest = destinationsData.find(d => d.id === id);
-    if (!dest) return;
-    localStorage.setItem('selectedDestination', JSON.stringify(dest));
+    localStorage.setItem('selectedDestinationId', id);
     window.location.href = 'Dist_Detail.html';
+}
+
+// Look up the currently-selected destination from the in-memory array.
+function currentDestination() {
+    const id = parseInt(localStorage.getItem('selectedDestinationId'));
+    return destinationsData.find(d => d.id === id);
 }
 
 // ============================================================
 // ---------- Destination Detail page ----------
 // ============================================================
 function loadDestinationDetail() {
-    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
+    const dest = currentDestination();
     if (!dest) {
         window.location.href = 'Dist_Search.html';
         return;
@@ -196,7 +200,7 @@ function loadDestinationDetail() {
 
     document.getElementById('detailDestName').textContent = dest.name;
     document.getElementById('detailDestLocation').innerHTML = `<i class="fas fa-map-marker-alt"></i> ${dest.location}`;
-    document.getElementById('detailDestPrice').textContent = `$${dest.price}`;
+    document.getElementById('detailDestPrice').textContent = formatPrice(dest.price);
     document.getElementById('detailDestRating').innerHTML = `<i class="fas fa-star"></i> ${dest.rating}`;
     document.getElementById('detailDestCategory').textContent = dest.category.charAt(0).toUpperCase() + dest.category.slice(1);
     document.getElementById('detailDestCountry').textContent = dest.country.charAt(0).toUpperCase() + dest.country.slice(1);
@@ -205,6 +209,16 @@ function loadDestinationDetail() {
 
     document.getElementById('detailMainImage').src = dest.images[0];
     document.getElementById('detailMainImage').alt = dest.name;
+
+    // Show the promo video only if this destination has a real video file.
+    const videoSection = document.getElementById('destVideoSection');
+    if (typeof dest.video === 'string') {
+        document.getElementById('destVideoSource').src = dest.video;
+        document.getElementById('destVideo').load();
+        videoSection.style.display = '';
+    } else {
+        videoSection.style.display = 'none';
+    }
 
     const thumbContainer = document.getElementById('detailThumbnailContainer');
     thumbContainer.innerHTML = '';
@@ -218,24 +232,30 @@ function loadDestinationDetail() {
 
     const eventsList = document.getElementById('detailEventsList');
     eventsList.innerHTML = '';
-    dest.events.forEach(event => {
+    dest.events.forEach((event, i) => {
         eventsList.innerHTML += `
-        <div class="event-item">
-            <span class="event-name"><i class="fas fa-calendar"></i> ${event.name}</span>
-            <span class="event-time">${event.time}</span>
-        </div>`;
+        <tr>
+            <td>${i + 1}</td>
+            <td><i class="fas fa-calendar"></i> ${event.name}</td>
+            <td><i class="far fa-clock"></i> ${event.time}</td>
+        </tr>`;
     });
 
-    localStorage.setItem('selectedDestinationPrice', dest.price);
+    // Keep the addon label's price in the active currency.
+    const guideLabel = document.getElementById('guideAddonLabel');
+    if (guideLabel) guideLabel.textContent = `Book a Tour Guide (+${formatPrice(50)})`;
+
     updateDestinationTotal();
 
     renderDetailComments(dest);
 }
 
 function updateDestinationTotal() {
+    const dest = currentDestination();
+    if (!dest) return;
     const guide = document.getElementById('bookGuide').checked;
     const total = dest.price + (guide ? 50 : 0);
-    document.getElementById('totalPrice').textContent = '$' + total;
+    document.getElementById('totalPrice').textContent = formatPrice(total);
 }
 
 function bookDestination() {
@@ -248,9 +268,14 @@ function bookDestination() {
         return;
     }
 
-    const dest = JSON.parse(localStorage.getItem('selectedDestination'));
+    const dest = currentDestination();
     showNotification(`Booking confirmed for ${dest.name}!`, 'success');
     setTimeout(() => window.location.href = 'Dist_Search.html', 900);
+}
+
+function addDestinationComment() {
+    const dest = currentDestination();
+    if (dest) addCommentTo(dest);
 }
 
 document.addEventListener('DOMContentLoaded', () => {

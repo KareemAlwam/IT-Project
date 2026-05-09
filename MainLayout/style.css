@@ -14,25 +14,36 @@ body {
 
 /* ============================================
    NAVBAR (used everywhere)
+   Modern sticky bar with three groups: logo / center links / actions.
    ============================================ */
 .navbar {
-    background: white;
-    padding: 1rem 2rem;
+    background: rgba(255, 255, 255, 0.85);
+    -webkit-backdrop-filter: saturate(180%) blur(12px);
+    backdrop-filter: saturate(180%) blur(12px);
+    padding: 0.85rem 2rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    gap: 1rem;
+    border-bottom: 1px solid rgba(30, 111, 92, 0.12);
+    box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02);
+    position: sticky;
+    top: 0;
+    z-index: 100;
 }
 .logo {
     font-size: 1.6rem;
     font-weight: bold;
     color: #1e6f5c;
     text-decoration: none;
+    letter-spacing: -0.01em;
 }
+
+/* Right group: actions (currency / theme / login / logout) */
 .nav-links {
     display: flex;
-    gap: 1.8rem;
+    gap: 0.6rem;
     align-items: center;
 }
 .nav-links a {
@@ -46,50 +57,63 @@ body {
 .login-link {
     background: #1e6f5c;
     color: white !important;
-    padding: 0.4rem 1.2rem;
-    border-radius: 30px;
+    padding: 0.45rem 1.2rem;
+    border-radius: 999px;
+    transition: background 0.2s, transform 0.2s;
+}
+.login-link:hover {
+    background: #155a4a;
+    transform: translateY(-1px);
 }
 .username-display {
     background: #e0f2e9;
     padding: 0.4rem 1rem;
-    border-radius: 30px;
+    border-radius: 999px;
     color: #1e6f5c;
     font-weight: bold;
 }
 .logout-btn {
     background: #dc2626;
     color: white !important;
-    padding: 0.4rem 1.2rem;
-    border-radius: 30px;
+    padding: 0.45rem 1.2rem;
+    border-radius: 999px;
     border: none;
     cursor: pointer;
     font-weight: 500;
     font-size: 0.95rem;
     text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
 }
 .logout-btn:hover {
     background: #b91c1c;
+    transform: translateY(-1px);
 }
 
-/* layout toggle button (always loaded; dark-mode override lives in NewLayout/theme.css) */
-.layout-toggle-btn {
+/* shared pill-button look for the small toggles (theme + currency) */
+.layout-toggle-btn,
+.currency-toggle-btn {
     background: transparent;
     border: 1px solid #cbd5e1;
     color: #2c3e50;
     padding: 0.4rem 0.9rem;
-    border-radius: 30px;
+    border-radius: 999px;
     cursor: pointer;
-    font-size: 0.9rem;
-    font-weight: 500;
+    font-size: 0.85rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    transition: background 0.2s, color 0.2s, border-color 0.2s;
+    min-width: 56px;
+    justify-content: center;
+    transition: background 0.2s, color 0.2s, border-color 0.2s, transform 0.2s;
 }
-.layout-toggle-btn:hover {
+.layout-toggle-btn:hover,
+.currency-toggle-btn:hover {
     background: #1e6f5c;
     color: white;
     border-color: #1e6f5c;
+    transform: translateY(-1px);
 }
 
 /* ============================================
@@ -750,8 +774,22 @@ body {
 }
 @media (max-width: 640px) {
     .navbar {
-        flex-direction: column;
-        gap: 0.8rem;
+        padding: 0.7rem 1rem;
+        gap: 0.6rem;
+    }
+    .nav-links {
+        gap: 0.4rem;
+    }
+    .layout-toggle-btn,
+    .currency-toggle-btn {
+        padding: 0.35rem 0.7rem;
+        min-width: 48px;
+        font-size: 0.8rem;
+    }
+    .login-link,
+    .logout-btn {
+        padding: 0.4rem 0.9rem;
+        font-size: 0.9rem;
     }
     .destinations-list .dest-card {
         flex-direction: column;
@@ -881,4 +919,175 @@ body {
 }
 .chat-input-row button:hover {
     background: #155a4a;
+}
+
+/* ============================================
+   FEEDBACK / COMPLAINTS POPUP
+   ============================================ */
+.feedback-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(15, 23, 42, 0.55);
+    display: none;
+    align-items: center;
+    justify-content: center;
+    z-index: 1001;
+    padding: 1rem;
+}
+.feedback-card {
+    background: white;
+    border-radius: 16px;
+    width: 100%;
+    max-width: 620px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+}
+.feedback-header {
+    background: #c2410c;
+    color: white;
+    padding: 1rem 1.4rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    border-radius: 16px 16px 0 0;
+}
+.feedback-header span i {
+    margin-right: 0.5rem;
+}
+.feedback-close {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-size: 1rem;
+}
+.feedback-form {
+    padding: 1.2rem 1.4rem 0.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.7rem;
+}
+.feedback-row {
+    display: flex;
+    gap: 0.7rem;
+}
+.feedback-row input {
+    flex: 1;
+}
+.feedback-form input,
+.feedback-form select,
+.feedback-form textarea {
+    padding: 0.55rem 0.8rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-family: inherit;
+    width: 100%;
+}
+.feedback-form input:focus,
+.feedback-form select:focus,
+.feedback-form textarea:focus {
+    outline: none;
+    border-color: #c2410c;
+}
+.feedback-submit {
+    background: #c2410c;
+    color: white;
+    border: none;
+    padding: 0.6rem 1.2rem;
+    border-radius: 999px;
+    font-weight: 600;
+    cursor: pointer;
+    align-self: flex-end;
+}
+.feedback-submit:hover {
+    background: #9a330a;
+}
+.feedback-form .feedback-submit {
+    margin: 0.5rem 0 1rem;
+}
+
+/* ============================================
+   ABOUT / TEAM PAGE
+   ============================================ */
+.about-hero {
+    text-align: center;
+    padding: 3rem 1.5rem 1rem;
+    max-width: 720px;
+    margin: 0 auto;
+}
+.about-hero h1 {
+    font-size: 2.2rem;
+    color: #1e293b;
+    margin: 0 0 0.5rem;
+}
+.about-hero p {
+    color: #475569;
+    line-height: 1.6;
+}
+.team-section {
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 2rem 1.5rem 4rem;
+}
+.team-section h2 {
+    text-align: center;
+    color: #1e293b;
+    margin-bottom: 2rem;
+}
+.team-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+}
+.team-card {
+    background: #ffffff;
+    border-radius: 16px;
+    padding: 1.75rem 1.25rem;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
+.team-card i {
+    font-size: 4rem;
+    color: #1e6f5c;
+    margin-bottom: 0.75rem;
+}
+.team-card h3 {
+    margin: 0 0 0.35rem;
+    color: #0f172a;
+}
+.team-role {
+    color: #1e6f5c;
+    font-weight: 600;
+    margin: 0 0 0.25rem;
+}
+.team-pages {
+    color: #64748b;
+    font-size: 0.85rem;
+    margin: 0;
+}
+@media (max-width: 800px) {
+    .team-grid { grid-template-columns: repeat(2, 1fr); }
+}
+@media (max-width: 500px) {
+    .team-grid { grid-template-columns: 1fr; }
+}
+
+/* Audio on about page + video on destination detail */
+.about-audio {
+    margin-top: 1.5rem;
+    width: 100%;
+    max-width: 420px;
+}
+.dest-video-section {
+    padding: 0 2rem;
+    margin-bottom: 2rem;
+}
+.dest-video {
+    width: 100%;
+    max-height: 420px;
+    border-radius: 12px;
+    background: #000;
 }
