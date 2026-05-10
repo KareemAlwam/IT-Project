@@ -52,43 +52,35 @@ function updateNavbar() {
     loginLink.href = user ? 'profile.html' : 'login.html';
 }
 
-// ---------- Live chat popout (front-end only) ----------
-// To add the chat to any page, just call injectChat() — for example
-// from an inline <script>injectChat();</script> tag at the bottom of
-// the page. Currently used on index.html.
+// ---------- Live chat popout (UI only — no backend) ----------
+// Call injectChat() once per page to add the floating button + panel.
 const chatHTML = `
-    <button id="chatToggle" class="chat-toggle" type="button" onclick="toggleChat()" aria-label="Open chat">
-        <i class="fas fa-comment-dots"></i>
-    </button>
-    <div id="chatPanel" class="chat-panel" style="display: none;">
-        <div class="chat-header">
-            <span><i class="fas fa-headset"></i> Live Support</span>
-            <button class="chat-close" type="button" onclick="toggleChat()" aria-label="Close chat">
-                <i class="fas fa-times"></i>
-            </button>
-        </div>
-        <div id="chatMessages" class="chat-messages"></div>
-        <form class="chat-input-row" onsubmit="sendChatMessage(event)">
-            <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
-            <button type="submit" aria-label="Send"><i class="fas fa-paper-plane"></i></button>
-        </form>
+<button id="chatToggle" class="chat-toggle" type="button" onclick="toggleChat()" aria-label="Open chat">
+    <i class="fas fa-comment-dots"></i>
+</button>
+<div id="chatPanel" class="chat-panel">
+    <div class="chat-header">
+        <span><i class="fas fa-headset"></i> Live Support</span>
+        <button class="chat-close" type="button" onclick="toggleChat()" aria-label="Close chat">
+            <i class="fas fa-times"></i>
+        </button>
     </div>
-`;
+    <div id="chatMessages" class="chat-messages"></div>
+    <form class="chat-input-row" onsubmit="sendChatMessage(event)">
+        <input type="text" id="chatInput" placeholder="Type a message..." autocomplete="off">
+        <button type="submit" aria-label="Send"><i class="fas fa-paper-plane"></i></button>
+    </form>
+</div>`;
 
 function injectChat() {
-    if (document.getElementById('chatToggle')) return; // already injected
+    if (document.getElementById('chatToggle')) return;
     document.body.insertAdjacentHTML('beforeend', chatHTML);
 }
 
 function toggleChat() {
     const panel = document.getElementById('chatPanel');
-    if (!panel) return;
-    if (panel.style.display === 'flex') {
-        panel.style.display = 'none';
-    } else {
-        panel.style.display = 'flex';
-        document.getElementById('chatInput').focus();
-    }
+    const isOpen = panel.classList.toggle('open');
+    if (isOpen) document.getElementById('chatInput').focus();
 }
 
 function sendChatMessage(e) {
@@ -104,7 +96,6 @@ function sendChatMessage(e) {
     messages.appendChild(bubble);
 
     input.value = '';
-    input.focus();
     messages.scrollTop = messages.scrollHeight;
 }
 
@@ -272,38 +263,34 @@ function toggleCurrency() {
     rerenderPrices();
 }
 
-// ============================================================
-// ---------- Feedback / Complaints popup ----------
-// Floating button opens a modal with a complaint form + a table
-// of previously submitted feedback (kept in localStorage).
-// ============================================================
+// ---------- Feedback / Complaints popup (UI only — no backend) ----------
+// Call injectFeedback() once per page to add the modal to the DOM.
 const feedbackHTML = `
-    <div id="feedbackModal" class="feedback-modal" style="display: none;" onclick="if(event.target===this)toggleFeedback()">
-        <div class="feedback-card">
-            <div class="feedback-header">
-                <span><i class="fas fa-comment-alt"></i> Feedback & Complaints</span>
-                <button class="feedback-close" type="button" onclick="toggleFeedback()" aria-label="Close">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <form class="feedback-form" onsubmit="submitFeedback(event)" novalidate>
-                <div class="feedback-row">
-                    <input type="text" id="feedbackName" placeholder="Your name">
-                    <input type="email" id="feedbackEmail" placeholder="Your email">
-                </div>
-                <select id="feedbackSubject">
-                    <option value="Complaint">Complaint</option>
-                    <option value="Suggestion">Suggestion</option>
-                    <option value="Bug Report">Bug Report</option>
-                    <option value="Praise">Praise</option>
-                </select>
-                <textarea id="feedbackMessage" rows="3" placeholder="Tell us what's on your mind..."></textarea>
-                <div id="feedbackError" class="error-msg"></div>
-                <button type="submit" class="feedback-submit">Submit</button>
-            </form>
+<div id="feedbackModal" class="feedback-modal" onclick="if(event.target===this)toggleFeedback()">
+    <div class="feedback-card">
+        <div class="feedback-header">
+            <span><i class="fas fa-comment-alt"></i> Feedback & Complaints</span>
+            <button class="feedback-close" type="button" onclick="toggleFeedback()" aria-label="Close">
+                <i class="fas fa-times"></i>
+            </button>
         </div>
+        <form id="feedbackForm" class="feedback-form" onsubmit="submitFeedback(event)" novalidate>
+            <div class="feedback-row">
+                <input type="text" id="feedbackName" placeholder="Your name">
+                <input type="email" id="feedbackEmail" placeholder="Your email">
+            </div>
+            <select id="feedbackSubject">
+                <option value="Complaint">Complaint</option>
+                <option value="Suggestion">Suggestion</option>
+                <option value="Bug Report">Bug Report</option>
+                <option value="Praise">Praise</option>
+            </select>
+            <textarea id="feedbackMessage" rows="3" placeholder="Tell us what's on your mind..."></textarea>
+            <div id="feedbackError" class="error-msg"></div>
+            <button type="submit" class="feedback-submit">Submit</button>
+        </form>
     </div>
-`;
+</div>`;
 
 function injectFeedback() {
     if (document.getElementById('feedbackModal')) return;
@@ -311,9 +298,7 @@ function injectFeedback() {
 }
 
 function toggleFeedback() {
-    const m = document.getElementById('feedbackModal');
-    if (!m) return;
-    m.style.display = (m.style.display === 'flex') ? 'none' : 'flex';
+    document.getElementById('feedbackModal').classList.toggle('open');
 }
 
 function submitFeedback(e) {
@@ -323,14 +308,15 @@ function submitFeedback(e) {
     const message = document.getElementById('feedbackMessage').value.trim();
     const err = document.getElementById('feedbackError');
 
-    if (!name || !email || !message) { err.textContent = 'All fields are required.'; return; }
-    if (!email.includes('@'))         { err.textContent = 'Enter a valid email address.'; return; }
-    if (message.length < 5)           { err.textContent = 'Message is too short.'; return; }
-    err.textContent = '';
+    let problem = '';
+    if (!name || !email || !message) problem = 'All fields are required.';
+    else if (!email.includes('@'))   problem = 'Enter a valid email address.';
+    else if (message.length < 5)     problem = 'Message is too short.';
 
-    document.getElementById('feedbackName').value = '';
-    document.getElementById('feedbackEmail').value = '';
-    document.getElementById('feedbackMessage').value = '';
+    if (problem) { err.textContent = problem; return; }
+
+    err.textContent = '';
+    document.getElementById('feedbackForm').reset();
     toggleFeedback();
     showNotification('Thanks! Your feedback was submitted.', 'success');
 }

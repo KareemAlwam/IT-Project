@@ -59,12 +59,10 @@
     gap: 1rem;
 }
 
-/* in dark mode, swap visibility: show the dark-mode buttons, hide the light-mode ones */
-.layout-new .search-card-dark {
-    display: inline-flex;
-}
-.layout-new .search-options .search-card:not(.search-card-dark) {
-    display: none;
+/* dark theme reveals the icon + verb that light mode hides */
+.layout-new .search-card i,
+.layout-new .search-card .verb {
+    display: inline;
 }
 
 /* default outline pill style for "Book Flights" / "Reserve Hotels" */
@@ -94,16 +92,16 @@
 }
 
 /* primary filled pill for "Find Destinations" */
-.layout-new .search-card-primary {
+.layout-new .search-card.primary {
     background: #ffffff;
     color: #1e2a3e;
     border-color: #ffffff;
 }
-.layout-new .search-card-primary i {
+.layout-new .search-card.primary i {
     color: #1e6f5c;
     opacity: 1;
 }
-.layout-new .search-card-primary:hover {
+.layout-new .search-card.primary:hover {
     background: #f1f5f9;
     color: #1e2a3e;
     border-color: #f1f5f9;
