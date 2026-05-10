@@ -165,13 +165,31 @@ function loadFlightDetail() {
     updateFlightTotal();
 }
 
+let promoDiscount = 0;
+
 function updateFlightTotal() {
     const flight = currentFlight();
     if (!flight) return;
     const adults = parseInt(document.getElementById('adultCount').value) || 0;
     const children = parseInt(document.getElementById('childCount').value) || 0;
-    const total = flight.price * (adults + children);
+    const subtotal = flight.price * (adults + children);
+    const total = subtotal - (subtotal * promoDiscount);
     document.getElementById('totalPrice').textContent = formatPrice(total);
+}
+
+function applyPromo() {
+    const code = document.getElementById('promoCode').value.trim().toUpperCase();
+    const msg = document.getElementById('promoMessage');
+    if (code === 'SAVE10') {
+        promoDiscount = 0.10;
+        msg.textContent = 'Promo applied: 10% off';
+        msg.style.color = 'green';
+    } else {
+        promoDiscount = 0;
+        msg.textContent = 'Invalid promo code';
+        msg.style.color = 'red';
+    }
+    updateFlightTotal();
 }
 
 function bookFlight() {

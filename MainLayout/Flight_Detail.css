@@ -159,6 +159,34 @@
     font-size: 1rem;
 }
 
+/* promo code */
+.promo-section {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.5rem;
+}
+.promo-section input {
+    flex: 1;
+    padding: 0.6rem;
+    border-radius: 8px;
+    border: none;
+    font-size: 0.9rem;
+}
+.promo-section button {
+    padding: 0.6rem 1rem;
+    border-radius: 8px;
+    border: none;
+    background: white;
+    color: #333;
+    font-weight: 600;
+    cursor: pointer;
+}
+.promo-message {
+    font-size: 0.85rem;
+    min-height: 1.2rem;
+    margin-bottom: 0.8rem;
+}
+
 /* responsive */
 @media (max-width: 768px) {
     .flight-detail-header {
