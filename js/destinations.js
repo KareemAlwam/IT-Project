@@ -20,8 +20,7 @@ const destinationsData = [
         ],
         weather: { temp: 32, condition: "Sunny" },
         comments: [
-            { author: "Sarah M.", text: "Absolutely breathtaking experience!" },
-            { author: "John D.", text: "A must-visit for history lovers." }
+            { author: "my opinion doesn't matter", text: "Bigger than I expected. Go early before it gets too hot." }
         ]
     },
     {
@@ -42,7 +41,7 @@ const destinationsData = [
         ],
         weather: { temp: 30, condition: "Partly Cloudy" },
         comments: [
-            { author: "Emma W.", text: "Best diving spot I've ever been to!" }
+            { author: "Emma W.", text: "Water was really clear, had a good time snorkeling." }
         ]
     },
     {
@@ -63,8 +62,7 @@ const destinationsData = [
         ],
         weather: { temp: 35, condition: "Sunny" },
         comments: [
-            { author: "Michael R.", text: "The night lighting is magical." },
-            { author: "Lisa K.", text: "So much history in one place!" }
+            { author: "Michael R.", text: "Worth coming back at night when it's lit up." }
         ]
     },
     {
@@ -85,7 +83,7 @@ const destinationsData = [
         ],
         weather: { temp: 18, condition: "Cloudy" },
         comments: [
-            { author: "Anna P.", text: "The city of love never disappoints." }
+            { author: "Anna P.", text: "Crowded but the food and the walks make up for it." }
         ]
     },
     {
@@ -106,7 +104,7 @@ const destinationsData = [
         ],
         weather: { temp: 24, condition: "Sunny" },
         comments: [
-            { author: "David S.", text: "Walking through history!" }
+            { author: "David S.", text: "Lines are long, book tickets in advance." }
         ]
     },
     {
@@ -127,7 +125,7 @@ const destinationsData = [
         ],
         weather: { temp: 12, condition: "Clear" },
         comments: [
-            { author: "Yuki T.", text: "The sunrise from the summit is unforgettable." }
+            { author: "Yuki T.", text: "Cold at the top even in summer, bring a jacket." }
         ]
     }
 ];
@@ -137,9 +135,12 @@ let currentDestinations = [...destinationsData];
 
 // Builds the HTML for a single destination card (grid or list view)
 function destinationCard(d) {
-    const desc = currentView === 'list'
-        ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${d.description.substring(0, 120)}...</p>`
-        : '';
+    let desc = '';
+    if (currentView === 'list') {
+        desc = `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${d.description.substring(0, 120)}...</p>`;
+    } else if (currentView === 'details') {
+        desc = `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${d.description}</p>`;
+    }
     return `
         <div class="dest-card" onclick="openDetail(${d.id})">
             <img class="dest-card-img" src="${d.images[0]}" alt="${d.name}">

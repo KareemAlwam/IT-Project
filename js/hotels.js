@@ -17,8 +17,7 @@ const hotelsData = [
         checkOut: "12:00 PM",
         weather: { temp: 32, condition: "Sunny" },
         comments: [
-            { author: "Sarah M.", text: "The pool at sunset is absolutely magical!" },
-            { author: "John D.", text: "Best resort experience I've ever had in Egypt." }
+            { author: "Sarah M.", text: "Pool was nice and the staff were helpful. Would stay again." }
         ]
     },
     {
@@ -36,8 +35,7 @@ const hotelsData = [
         checkOut: "11:00 AM",
         weather: { temp: 22, condition: "Clear" },
         comments: [
-            { author: "Yuki T.", text: "Location is perfect — everything is walking distance!" },
-            { author: "Emma W.", text: "Great vibes, super clean rooms, and amazing staff." }
+            { author: "Yuki T.", text: "Rooms are small but the location is good." }
         ]
     },
     {
@@ -55,8 +53,7 @@ const hotelsData = [
         checkOut: "12:00 PM",
         weather: { temp: 28, condition: "Partly Cloudy" },
         comments: [
-            { author: "Anna P.", text: "The infinity pool view is worth every penny." },
-            { author: "Michael R.", text: "Absolute paradise. I never wanted to leave." }
+            { author: "Anna P.", text: "Expensive but the view is hard to beat." }
         ]
     },
     {
@@ -74,8 +71,7 @@ const hotelsData = [
         checkOut: "11:00 AM",
         weather: { temp: 30, condition: "Sunny" },
         comments: [
-            { author: "David S.", text: "Such a cozy and unique place, very different from typical hotels." },
-            { author: "Lisa K.", text: "The beachfront location is unbeatable. Loved it!" }
+            { author: "David S.", text: "Quiet spot right by the beach. Good for a few nights away." }
         ]
     },
     {
@@ -93,8 +89,7 @@ const hotelsData = [
         checkOut: "12:00 PM",
         weather: { temp: 33, condition: "Sunny" },
         comments: [
-            { author: "Claire D.", text: "The Nile view from the rooftop restaurant is stunning." },
-            { author: "James T.", text: "Luxury at its finest — everything was perfect." }
+            { author: "Claire D.", text: "Comfortable rooms and the breakfast was decent." }
         ]
     },
     {
@@ -112,8 +107,7 @@ const hotelsData = [
         checkOut: "11:00 AM",
         weather: { temp: 26, condition: "Partly Cloudy" },
         comments: [
-            { author: "Sophie L.", text: "Waking up to jungle sounds is an experience like no other." },
-            { author: "Hassan A.", text: "Incredibly peaceful and beautifully designed." }
+            { author: "Sophie L.", text: "Really quiet and relaxing. WiFi was a bit slow though." }
         ]
     }
 ];
@@ -122,9 +116,18 @@ let currentHotelView = 'grid';
 let currentHotels = [...hotelsData];
 
 function hotelCard(h) {
-    const desc = currentHotelView === 'list'
-        ? `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${h.description.substring(0, 120)}...</p>`
-        : '';
+    let desc = '';
+    let amenitiesHtml = '';
+    if (currentHotelView === 'list') {
+        desc = `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${h.description.substring(0, 120)}...</p>`;
+    } else if (currentHotelView === 'details') {
+        desc = `<p style="margin-top: 0.5rem; color: #475569; font-size: 0.9rem;">${h.description}</p>`;
+        let tags = '';
+        for (let i = 0; i < h.amenities.length; i++) {
+            tags += `<span class="amenity-tag">${h.amenities[i]}</span>`;
+        }
+        amenitiesHtml = `<div class="amenities-list" style="margin-top: 0.8rem;">${tags}</div>`;
+    }
     return `
         <div class="dest-card" onclick="openHotelDetail(${h.id})">
             <img class="dest-card-img" src="${h.images[0]}" alt="${h.name}">
@@ -135,6 +138,7 @@ function hotelCard(h) {
                     <span class="dest-card-rating"><i class="fas fa-star"></i> ${h.rating}</span>
                 </div>
                 ${desc}
+                ${amenitiesHtml}
                 <div class="dest-card-meta" style="margin-top: 0.5rem;">
                     <span class="dest-card-price">${formatPrice(h.pricePerNight)}/night</span>
                     <span>${h.hotelClass}★ Hotel</span>
