@@ -11,10 +11,11 @@ body {
     background: #f5f9ff;
     color: #1e2a3e;
 }
-
+.dark-only {
+    display: none;
+}
 /* ============================================
    NAVBAR (used everywhere)
-   Modern sticky bar with three groups: logo / center links / actions.
    ============================================ */
 .navbar {
     background: rgba(255, 255, 255, 0.85);
